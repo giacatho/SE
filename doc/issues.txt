@@ -1,0 +1,7 @@
+Parser
+1. Out of memory -> change from -mx900M to -mx2024 (still out of memory), than to -mx4048M (ok)
+And add Apache Xerces xercesImpl.jar to classpath  (http://stackoverflow.com/a/1676261/1343667). After adding, confirmed Java 
+use the Xerces parser.
+2. aux attribute must be inside <author> => add to the dtd.
+3. "The parser has encountered more than "1000000" entity expansions in this document; this is the limit imposed by the JDK."
+-> Solution: add Apache Xerces xercesImpl.jar to classpath by copy it to /Library/Java/Extensions (http://stackoverflow.com/a/1676261/1343667)
