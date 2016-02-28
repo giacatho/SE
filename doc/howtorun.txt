@@ -1,0 +1,14 @@
+Step 1: Change constant values in Constants to your appropriate file path. 
+    For example, c:\path\to\index and c:\path\to\to\dblp_small.xml.
+
+Step 2: build the index.
+    Right click ci6226.indexer/DBLPIndexer.java -> Run
+
+The index is built and stored in Constants.INDEX_DIR folder.
+
+Step 3: run the searcher server.
+    (Pre-requisite: Tomcat server is set up.)
+    a. Right click the project CI6226 -> Run
+    b. Open the browser: http://localhost:8080/CI6226/SampleSearchServlet
+ 
+    
