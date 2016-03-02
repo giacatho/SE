@@ -1,0 +1,118 @@
+/* 
+    Created on : 21-Feb-2016, 22:10:57
+    Author     : Quoc
+*/
+
+/* styles for popup dialog*/
+.white-popup {
+    position: relative;
+    background: #FFF;
+    width: auto;
+    max-width: 900px;
+    margin: 20px auto;
+    border: 1 solid gray;
+    border-radius: 3px;
+}
+
+.menu-item {    
+}
+
+.pac-container {
+    z-index: 10000
+}
+
+/* overlay*/
+#overlay-absolute {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background: #000;
+    z-index:1000;
+    opacity: 0.8;
+    filter: alpha(opacity=80);
+}
+
+i.loading-img {
+    content: url("../images/refresh.gif");
+    opacity: 70%;
+    width: auto;
+    height: 7%;
+    position: absolute;
+    top: 45%;
+    left: 45%;
+    margin: 0 auto;
+    
+}
+
+/* style for table row on hover*/ 
+.row-with-command {
+}
+
+.row-with-command:hover {
+    border: 1px solid #d0d0d0;
+}
+
+.row-with-command .col {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
+
+.row-with-command .btn-group,
+.row-with-command .btn-toolbar{
+    visibility: hidden;
+}
+
+.row-with-command:hover .btn-group, 
+.row-with-command:hover .btn-toolbar {     
+    visibility: visible;   
+    line-break: 0px;
+    vertical-align: middle;
+}
+
+.row-with-command .btn-group .btn,
+.row-with-command .btn-toolbar .btn {
+    float: right;
+}
+
+.row-with-command .btn-group .btn .ion,
+.row-with-command .btn-toolbar .btn .ion {
+    font-size: 150%;
+}
+
+.row-with-command .btn-group .btn .glyphicon,
+.row-with-command .btn-toolbar .btn .glyphicon {
+    font-size: 132%;    
+}
+
+.row-with-command .confirmation {
+    display: none;
+    visibility: hide;
+    vertical-align: middle;
+}
+
+.row-with-command .confirmation .btn-group { 
+    vertical-align: middle;
+}
+
+.row-with-command .confirmation .popover-content { 
+    vertical-align: middle;
+}
+
+.row-with-command .confirmation .btn-group .btn{
+    float: none;    
+}
+
+
+
+/*.upload-fileinfo { padding: 5px; font-size: 11px; position: relative; }
+.uploadimage-upload { background: #EEE; margin: 4px 0; }
+.uploadimage-uploadcompleted { background: #d1f4ac; }
+.uploadimage-progresspct { position: absolute; top: 5px; right: 5px; }
+.uploadimage-progress { background: #999; }
+.uploadimage-progressbar { background: maroon; height: 2px; }
+.uploadimage-totalprogress { background: #999; }
+.uploadimage-totalprogressbar { background: #107EC2; height: 6px; }*/
+

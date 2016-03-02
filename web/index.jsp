@@ -1,7 +1,7 @@
 <%-- 
     Document   : index
-    Created on : Feb 28, 2016, 5:15:49 PM
-    Author     : giacatho
+    Created on : 19-Feb-2016, 17:47:52
+    Author     : Quoc
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -9,9 +9,26 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Event Management</title>                      
+
+        <%@include file="template/head.jsp" %>        
     </head>
-    <body>
-        <h1>Hello World!</h1>
+
+    <body class="skin-blue layout-top-nav" style="font-size: 16px;">
+        <div class="wrapper">
+            <!-- header -->
+            <%@include file="template/header.jsp"%>
+            <!-- Left side column. contains the logo and sidebar -->
+            <%--<%@include file="template/sidebar.jsp"%>--%>           
+            
+            
+            <!-- Content Wrapper. Contains page content -->
+            <div class="content-wrapper" style="width: 100%; height:100%">
+                <!-- Content Header (Page header) -->
+                
+            </div><!-- /.content-wrapper -->            
+            
+            <%@include file="template/footer.jsp" %>
+        </div>
     </body>
 </html>
