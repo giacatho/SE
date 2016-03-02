@@ -1,6 +1,6 @@
-package ci6226.indexer;
+package se.indexer;
 
-import ci6226.constant.Constants;
+import se.constant.Constants;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
