@@ -39,3 +39,10 @@
 <!-- datepicker -->
 <script src="plugins/datepicker/bootstrap-datepicker.js"></script>
 
+
+<!--My Custom-->
+<link rel="stylesheet" href="css/site.css"/>
+<link rel="stylesheet" href="css/search.css"/>
+
+<script src="scripts/search.js"></script>
+<script src="scripts/utility.js"></script>

@@ -1,18 +1,7 @@
 /* 
-    Created on : 21-Feb-2016, 22:10:57
+    Created on : 3-Mar-2016, 22:10:57
     Author     : Quoc
 */
-
-/* styles for popup dialog*/
-.white-popup {
-    position: relative;
-    background: #FFF;
-    width: auto;
-    max-width: 900px;
-    margin: 20px auto;
-    border: 1 solid gray;
-    border-radius: 3px;
-}
 
 .menu-item {    
 }
@@ -106,13 +95,10 @@ i.loading-img {
 }
 
 
+.btn-with-icon {
+    padding:4px 8px;
+}
 
-/*.upload-fileinfo { padding: 5px; font-size: 11px; position: relative; }
-.uploadimage-upload { background: #EEE; margin: 4px 0; }
-.uploadimage-uploadcompleted { background: #d1f4ac; }
-.uploadimage-progresspct { position: absolute; top: 5px; right: 5px; }
-.uploadimage-progress { background: #999; }
-.uploadimage-progressbar { background: maroon; height: 2px; }
-.uploadimage-totalprogress { background: #999; }
-.uploadimage-totalprogressbar { background: #107EC2; height: 6px; }*/
-
+.btn-with-icon .ion {
+    font-size: 155%;
+}

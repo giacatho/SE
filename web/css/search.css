@@ -1,0 +1,77 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 03-Mar-2016, 08:50:17
+    Author     : Quoc
+*/
+
+.search-outline {
+    
+}
+
+.search-outline .btn-add-item, .btn-search, .btn-clear {
+    font-weight: bold;
+}
+
+.search-zone {
+}
+
+.search-zone .search-item:first-child .input-group-btn:first-child {
+    display: none;
+}
+
+.search-zone .search-item:first-child .btn-remove {
+    display: none;
+}
+
+.search-zone .search-item:last-child {
+    margin-bottom: 0px;
+}
+
+.search-item {
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.search-item select {
+    padding-left: 6px;
+    padding-right: 0px;
+}
+
+.search-item .input-group-btn .select-operator {
+    margin-right: 6px;
+}
+
+.search-item .input-group-btn .btn-remove{
+    margin-left: 9px;    
+    padding:3px 8px;
+    border-radius: 50%;
+    outline: none;
+}
+
+.search-item .input-group-btn .btn-remove .ion{
+    font-size: 100%;
+}
+
+.select-field {
+}
+
+.select-operator {    
+}
+
+.btn-remove {
+}
+
+.btn-add-item {    
+}
+
+.btn-search {
+    
+}
+
+.btn-clear {
+    
+}
