@@ -47,71 +47,72 @@ public class LuceneSearcher {
 	}
 	
 	public LuceneSearcher() throws IOException {
-		IndexReader reader = DirectoryReader.open(FSDirectory.open(Paths.get(Constants.INDEX_SIMPLE_ANALYZER_DIR)));
-		IS = new IndexSearcher(reader);
+            IndexReader reader = DirectoryReader.open(FSDirectory.open(
+                Paths.get(Constants.INDEX_SIMPLE_ANALYZER_DIR)));
+            IS = new IndexSearcher(reader);
 	}
 	
 	Analyzer getAnalyzer() {
-		// Tin: the field is never used in previous version
-		return new StandardAnalyzer(); 
+            // Tin: the field is never used in previous version
+            return new StandardAnalyzer(); 
 	}
 	
 	BooleanClause.Occur getOccur(SearchInput input) {
-		switch (input.getOperator()) {
-			case AND: return BooleanClause.Occur.MUST;
-			case NOT: return BooleanClause.Occur.MUST_NOT;
-			case OR: return BooleanClause.Occur.SHOULD;
-		}
-		
-		return null;
+            switch (input.getOperator()) {
+                    case AND: return BooleanClause.Occur.MUST;
+                    case NOT: return BooleanClause.Occur.MUST_NOT;
+                    case OR: return BooleanClause.Occur.SHOULD;
+            }
+
+            return null;
 	}
 	
 	Query parse(SearchInput input) throws ParseException {
-		QueryParser parser = null;
-		
-		Field field = input.getField();
-		if (field == null) {
-			parser = new MultiFieldQueryParser(AllFields, getAnalyzer());
-		} else {
-			parser = new QueryParser(field.toString().toLowerCase(), getAnalyzer());
-		}
-		
-		return parser.parse(input.getKey());
+            QueryParser parser = null;
+
+            Field field = input.getField();
+            if (field == null) {
+                    parser = new MultiFieldQueryParser(AllFields, getAnalyzer());
+            } else {
+                    parser = new QueryParser(field.toString().toLowerCase(), getAnalyzer());
+            }
+
+            return parser.parse(input.getKey());
 	}
 	
 	Query parse(List<SearchInput> inputs) throws ParseException {
-		if (inputs.size() == 1) 
-			return parse(inputs.get(0));
-		
-		BooleanQuery query = new BooleanQuery();
-		for (SearchInput input: inputs) {
-			query.add(parse(input), getOccur(input));
-		}
-		
-		return query;
+            if (inputs.size() == 1) 
+                    return parse(inputs.get(0));
+
+            BooleanQuery query = new BooleanQuery();
+            for (SearchInput input: inputs) {
+                    query.add(parse(input), getOccur(input));
+            }
+
+            return query;
 	}
 	
 	public List<SearchOutput> search(List<SearchInput> inputs) throws IOException, ParseException {
-		return search(inputs, 10);
+            return search(inputs, 10);
 	}
 	
 	public List<SearchOutput> search(List<SearchInput> inputs, int numberOfHits) throws IOException, ParseException {
-		Query query = parse(inputs);
-		long start = System.currentTimeMillis();
-		
-		TopDocs hits = IS.search(query, numberOfHits);
-		totalHits = hits.totalHits;
-		long end = System.currentTimeMillis();
-		
-		searchTime = end - start;
-		
-		List<SearchOutput> outputs = new ArrayList();
-		for (ScoreDoc scoreDoc: hits.scoreDocs) {
-			Document doc = IS.doc(scoreDoc.doc);
-			
-			outputs.add(new SearchOutput(doc));
-		}
-		
-		return outputs;
+            Query query = parse(inputs);
+            long start = System.currentTimeMillis();
+
+            TopDocs hits = IS.search(query, numberOfHits);
+            totalHits = hits.totalHits;
+            long end = System.currentTimeMillis();
+
+            searchTime = end - start;
+
+            List<SearchOutput> outputs = new ArrayList();
+            for (ScoreDoc scoreDoc: hits.scoreDocs) {
+                    Document doc = IS.doc(scoreDoc.doc);
+
+                    outputs.add(new SearchOutput(doc));
+            }
+
+            return outputs;
 	}
 }
