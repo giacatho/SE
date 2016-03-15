@@ -7,7 +7,6 @@
 package se.searcher.model;
 
 import java.util.List;
-import se.searcher.model.SearchResultItem;
 
 public class SearchResult {
     private final long searchTime;

@@ -8,6 +8,7 @@ package se.searcher;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -107,8 +108,10 @@ public class LuceneSearcher {
 			resultItems.add(new SearchResultItem(
 					scoreDoc.score, 
 					doc.get("key"), 
-					doc.get("title"), 
-					null // Temp: should be					Arrays.asList(doc.getValues("author")
+					doc.get("title"),
+					Arrays.asList(doc.getValues("author")),
+					doc.get("pubyear"),
+					doc.get("pubvenue")
 			));
 		}
 		

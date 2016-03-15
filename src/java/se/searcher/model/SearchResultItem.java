@@ -16,12 +16,17 @@ public class SearchResultItem {
 	private final String docKey;
 	private final String docTitle;
 	private final List<String> docAuthors;
+	private final String docPubYear;
+	private final String docPubVenue;
 
-	public SearchResultItem(float searchScore, String docKey, String docTitle, List<String> docAuthors) {
+	public SearchResultItem(float searchScore, String docKey, String docTitle, 
+			List<String> docAuthors, String docPubYear, String docPubVenue) {
 		this.searchScore = searchScore;
 		this.docKey = docKey;
 		this.docTitle = docTitle;
 		this.docAuthors = docAuthors;
+		this.docPubYear = docPubYear;
+		this.docPubVenue = docPubVenue;
 	}
 	
 	public float getSearchScore() {
@@ -38,5 +43,13 @@ public class SearchResultItem {
 
 	public List<String> getDocAuthors() {
 		return docAuthors;
+	}
+	
+	public String getDocPubYear() {
+		return docPubYear;
+	}
+
+	public String getDocPubVenue() {
+		return docPubVenue;
 	}
 }

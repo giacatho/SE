@@ -11,11 +11,14 @@
 
 <c:choose>
     <c:when test="${result != null}">
-        <h3>Found ${result.noHits} documents in ${result.searchTime} miliseconds. </h3>
+        <h5>About ${result.noHits} results (${result.searchTime} miliseconds)</h3>
         <c:forEach var="resultItem" items="${result.resultItems}">
 			<div class="result-item">
 				<div class="title">Title: ${resultItem.docTitle}</div>
+				<div class="author">${fn:length(resultItem.docAuthors)} Authors: ${resultItem.docAuthors}</div>
 				<div class="key">Key: ${resultItem.docKey}</div>
+				<div class="pubyear">Public Year: ${resultItem.docPubYear}</div>
+				<div class="pubvenue">Public Venue: ${resultItem.docPubVenue}</div>
 				<div class="score">Score: ${resultItem.searchScore}</div>
 			</div>
         </c:forEach>

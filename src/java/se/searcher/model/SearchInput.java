@@ -6,9 +6,6 @@
 
 package se.searcher.model;
 
-import se.searcher.model.Operator;
-import se.searcher.model.Field;
-
 
 public class SearchInput {
     private String key;
