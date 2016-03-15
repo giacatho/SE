@@ -25,9 +25,6 @@ import java.util.HashSet;
 import java.util.List;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.SimpleAnalyzer;
-import org.apache.lucene.analysis.core.StopAnalyzer;
-import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
@@ -87,7 +84,7 @@ public class DblpIndexBuilder {
 
     private String getValue(String line) {
         int pos = line.indexOf(":");
-        return line.substring(pos);
+        return line.substring(pos + 1).trim();
     }
 
     /**
