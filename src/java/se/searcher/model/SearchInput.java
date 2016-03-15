@@ -4,7 +4,10 @@
     Author     : Quoc
 */
 
-package se.searcher.gui;
+package se.searcher.model;
+
+import se.searcher.model.Operator;
+import se.searcher.model.Field;
 
 
 public class SearchInput {

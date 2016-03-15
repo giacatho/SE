@@ -5,13 +5,22 @@
  */
 package se.searcher.gui;
 
+import se.searcher.model.SearchInput;
+import se.searcher.model.SearchResult;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.lucene.queryparser.classic.ParseException;
+import se.searcher.LuceneSearcher;
 
 /**
  *
@@ -32,11 +41,15 @@ public class SearchServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-                    
-        SearchFactory factory = new  SearchFactory(request, "input");
-        if (factory.run())  {
-            request.setAttribute("result", factory.getResult());
-        }
+                   
+		GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create(); 
+		
+        SearchInput[] lstTemp = gson.fromJson(request.getParameter("input"), SearchInput[].class);
+        List<SearchInput> searchInput = Arrays.asList(lstTemp);
+		
+		request.setAttribute("input", searchInput);
+		request.setAttribute("result", this.search(searchInput));
 
         request.getRequestDispatcher("/views/search_result.jsp").forward(request, response);
     }
@@ -80,4 +93,17 @@ public class SearchServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+	
+	public SearchResult search (List<SearchInput> inputs){
+        try {
+            LuceneSearcher machine = new LuceneSearcher();            
+			return machine.search(inputs);
+        } catch (IOException ex) {
+            Logger.getLogger(SearchServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(SearchServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
+    }
 }

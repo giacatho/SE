@@ -4,7 +4,7 @@
     Author     : Quoc
 */
 
-package se.searcher.gui;
+package se.searcher.model;
 
 import com.google.gson.annotations.SerializedName;
 

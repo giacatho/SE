@@ -75,3 +75,15 @@ and open the template in the editor.
 .btn-clear {
     
 }
+
+
+.result-item {
+	margin-top: 0;
+	margin-bottom: 20px;
+}
+
+.result-item .title {
+	font-size: 18px;
+	font-weight: normal;
+	line-height: 21.6px;
+}

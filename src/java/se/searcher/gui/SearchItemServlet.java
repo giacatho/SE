@@ -5,10 +5,10 @@
  */
 package se.searcher.gui;
 
+import se.searcher.model.Item;
+import se.searcher.model.Field;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

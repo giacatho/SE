@@ -25,101 +25,93 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.FSDirectory;
 import se.constant.Constants;
-import se.searcher.gui.Field;
-import se.searcher.gui.SearchInput;
-import se.searcher.gui.SearchOutput;
+import se.searcher.model.Field;
+import se.searcher.model.SearchResult;
+import se.searcher.model.SearchInput;
+import se.searcher.model.SearchResultItem;
 
 public class LuceneSearcher {
 
-    static String[] AllFields = new String[]{"title", "author"};
+	static String[] AllFields = new String[]{"title", "author"};
 
-    IndexSearcher IS = null;
+	IndexSearcher IS = null;
 
-    long searchTime;
-
-    public long getSearchTime() {
-	return searchTime;
-    }
-
-    int totalHits;
-
-    public int getTotalHits() {
-	return totalHits;
-    }
-
-    public LuceneSearcher() throws IOException {
-	IndexReader reader = DirectoryReader.open(FSDirectory.open(
-		Paths.get(Constants.INDEX_SIMPLE_ANALYZER_DIR)));
-	IS = new IndexSearcher(reader);
-    }
-
-    Analyzer getAnalyzer() {
-	// Tin: the field is never used in previous version
-	return new StandardAnalyzer();
-    }
-
-    BooleanClause.Occur getOccur(SearchInput input) {
-	switch (input.getOperator()) {
-	    case AND:
-		return BooleanClause.Occur.MUST;
-	    case NOT:
-		return BooleanClause.Occur.MUST_NOT;
-	    case OR:
-		return BooleanClause.Occur.SHOULD;
+	public LuceneSearcher() throws IOException {
+		IndexReader reader = DirectoryReader.open(FSDirectory.open(
+				Paths.get(Constants.INDEX_SIMPLE_ANALYZER_DIR)));
+		IS = new IndexSearcher(reader);
 	}
 
-	return null;
-    }
-
-    Query parse(SearchInput input) throws ParseException {
-	QueryParser parser = null;
-
-	Field field = input.getField();
-	if (field == null) {
-	    parser = new MultiFieldQueryParser(AllFields, getAnalyzer());
-	} else {
-	    parser = new QueryParser(field.toString().toLowerCase(), getAnalyzer());
+	Analyzer getAnalyzer() {
+		// Tin: the field is never used in previous version
+		return new StandardAnalyzer();
 	}
 
-	return parser.parse(input.getKey());
-    }
+	BooleanClause.Occur getOccur(SearchInput input) {
+		switch (input.getOperator()) {
+			case AND:
+				return BooleanClause.Occur.MUST;
+			case NOT:
+				return BooleanClause.Occur.MUST_NOT;
+			case OR:
+				return BooleanClause.Occur.SHOULD;
+		}
 
-    Query parse(List<SearchInput> inputs) throws ParseException {
-	if (inputs.size() == 1) {
-	    return parse(inputs.get(0));
+		return null;
 	}
 
-	BooleanQuery query = new BooleanQuery();
-	for (SearchInput input : inputs) {
-	    query.add(parse(input), getOccur(input));
+	Query parse(SearchInput input) throws ParseException {
+		QueryParser parser = null;
+
+		Field field = input.getField();
+		if (field == null) {
+			parser = new MultiFieldQueryParser(AllFields, getAnalyzer());
+		} else {
+			parser = new QueryParser(field.toString().toLowerCase(), getAnalyzer());
+		}
+
+		return parser.parse(input.getKey());
 	}
 
-	return query;
-    }
+	Query parse(List<SearchInput> inputs) throws ParseException {
+		if (inputs.size() == 1) {
+			return parse(inputs.get(0));
+		}
 
-    public List<SearchOutput> search(List<SearchInput> inputs) 
-	    throws IOException, ParseException {
-	return search(inputs, 10);
-    }
+		BooleanQuery query = new BooleanQuery();
+		for (SearchInput input : inputs) {
+			query.add(parse(input), getOccur(input));
+		}
 
-    public List<SearchOutput> search(List<SearchInput> inputs, int numberOfHits) 
-	    throws IOException, ParseException {
-	Query query = parse(inputs);
-	long start = System.currentTimeMillis();
-
-	TopDocs hits = IS.search(query, numberOfHits);
-	totalHits = hits.totalHits;
-	long end = System.currentTimeMillis();
-
-	searchTime = end - start;
-
-	List<SearchOutput> outputs = new ArrayList();
-	for (ScoreDoc scoreDoc : hits.scoreDocs) {
-	    Document doc = IS.doc(scoreDoc.doc);
-
-	    outputs.add(new SearchOutput(doc));
+		return query;
 	}
 
-	return outputs;
-    }
+	public SearchResult search(List<SearchInput> inputs)
+			throws IOException, ParseException {
+		return search(inputs, 10);
+	}
+
+	public SearchResult search(List<SearchInput> inputs, int numberOfHits) 
+			throws IOException, ParseException {
+		
+		Query query = parse(inputs);
+		
+		long startTime = System.currentTimeMillis();
+		TopDocs hits = IS.search(query, numberOfHits);
+		long endTime = System.currentTimeMillis();
+
+		List<SearchResultItem> resultItems = new ArrayList();
+		for (ScoreDoc scoreDoc : hits.scoreDocs) {
+			Document doc = IS.doc(scoreDoc.doc);
+			
+			resultItems.add(new SearchResultItem(
+					scoreDoc.score, 
+					doc.get("key"), 
+					doc.get("title"), 
+					null // Temp: should be					Arrays.asList(doc.getValues("author")
+			));
+		}
+		
+		return new SearchResult(endTime - startTime, hits.totalHits, resultItems);
+	}
 }
