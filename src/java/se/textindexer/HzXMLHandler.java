@@ -21,6 +21,22 @@ import se.constant.Constants;
  */
 public class HzXMLHandler extends DefaultHandler {
 
+// Temp: bugs: this one incorrectly add more authors: e.g 	
+//type:article
+//key:journals/jpdc/LiSTSK13
+//title:Parallel multitask cross validation for Support Vector Machine using GPU.
+//pubvenue:J. Parallel Distrib. Comput.
+//pubyear:2013
+//author:Qi Li
+//author:Ra
+//author:ied Salman
+//author:Erik Test
+//author:Robert Strack
+//author:Vojislav Kecman
+	
+//<title>NAT2TEST<sub>SCR</sub>: Test case generation from natural language requirements based on SCR specifications.</title>
+
+	
     private Boolean insideDblpItem = false; //inside inproceedings or article
     private BufferedWriter bw;
     private String currentTag;

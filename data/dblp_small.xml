@@ -240,7 +240,49 @@
 <ee>http://dx.doi.org/10.1007/BF00289510</ee>
 </article>
 
-
+<article mdate="2011-08-15" key="journals/ijcm/GoutV03">
+<author>Christian Gout</author>
+<author>Sylvie Vieira-Test&eacute;</author>
+<title>An Algorithm for Segmentation under Interpolation Conditions Using Deformable Models.</title>
+<pages>47-54</pages>
+<year>2003</year>
+<volume>80</volume>
+<journal>Int. J. Comput. Math.</journal>
+<number>1</number>
+<ee>http://dx.doi.org/10.1080/00207160304665</ee>
+<url>db/journals/ijcm/ijcm80.html#GoutV03</url>
+</article>
+<article mdate="2013-02-08" key="journals/jpdc/LiSTSK13">
+<author>Qi Li</author>
+<author>Raied Salman</author>
+<author>Erik Test</author>
+<author>Robert Strack</author>
+<author>Vojislav Kecman</author>
+<title>Parallel multitask cross validation for Support Vector Machine using GPU.</title>
+<pages>293-302</pages>
+<year>2013</year>
+<volume>73</volume>
+<journal>J. Parallel Distrib. Comput.</journal>
+<number>3</number>
+<ee>http://dx.doi.org/10.1016/j.jpdc.2012.02.011</ee>
+<url>db/journals/jpdc/jpdc73.html#LiSTSK13</url>
+</article>
+<article mdate="2014-11-21" key="journals/scp/CarvalhoFBSMMB14">
+<author>Gustavo Carvalho</author>
+<author>Diogo Falc&atilde;o</author>
+<author>Fl&aacute;via de Almeida Barros</author>
+<author>Augusto Sampaio</author>
+<author>Alexandre Mota</author>
+<author>Leonardo Motta</author>
+<author>Mark R. Blackburn</author>
+<title>NAT2TEST<sub>SCR</sub>: Test case generation from natural language requirements based on SCR specifications.</title>
+<pages>275-297</pages>
+<year>2014</year>
+<volume>95</volume>
+<journal>Sci. Comput. Program.</journal>
+<ee>http://dx.doi.org/10.1016/j.scico.2014.06.007</ee>
+<url>db/journals/scp/scp95.html#CarvalhoFBSMMB14</url>
+</article>
 <article mdate="2011-01-11" key="journals/acta/Franta76">
 <author>William R. Franta</author>
 <title>The Mathematical Analysis of the Computer System Modeled as a Two Stage Cyclic Queue.</title>
