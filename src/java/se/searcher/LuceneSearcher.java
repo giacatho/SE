@@ -79,12 +79,13 @@ public class LuceneSearcher {
 			return parse(inputs.get(0));
 		}
 
-		BooleanQuery query = new BooleanQuery();
+		BooleanQuery.Builder query = new BooleanQuery.Builder();
+		
 		for (SearchInput input : inputs) {
 			query.add(parse(input), getOccur(input));
 		}
 
-		return query;
+		return query.build();
 	}
 
 	public SearchResult search(List<SearchInput> inputs)
