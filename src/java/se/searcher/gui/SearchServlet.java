@@ -45,11 +45,12 @@ public class SearchServlet extends HttpServlet {
 		GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create(); 
 		
+		int maxResult = Integer.parseInt(request.getParameter("max_result"));
         SearchInput[] lstTemp = gson.fromJson(request.getParameter("input"), SearchInput[].class);
         List<SearchInput> searchInput = Arrays.asList(lstTemp);
 		
 		request.setAttribute("input", searchInput);
-		request.setAttribute("result", this.search(searchInput));
+		request.setAttribute("result", this.search(searchInput, maxResult));
 
         request.getRequestDispatcher("/views/search_result.jsp").forward(request, response);
     }
@@ -94,10 +95,10 @@ public class SearchServlet extends HttpServlet {
     }// </editor-fold>
 
 	
-	public SearchResult search (List<SearchInput> inputs){
+	public SearchResult search (List<SearchInput> inputs, int maxResult){
         try {
             LuceneSearcher machine = new LuceneSearcher();            
-			return machine.search(inputs);
+			return machine.search(inputs, maxResult);
         } catch (IOException ex) {
             Logger.getLogger(SearchServlet.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParseException ex) {

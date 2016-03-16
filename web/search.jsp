@@ -34,17 +34,20 @@
                 if (key) {
                     var operator = $(this).closestChild('.select-operator').val();
                     var field = $(this).closestChild('.select-field').val();
-                    
+					
                     var query = { operator : operator, key : key, field :field };
                     queries.push(query);                       
                 }
             });
-            
+			
             //send to search servlet
             $.ajax({
                 type: "POST",
                 url: "Search",
-                data: { input: JSON.stringify(queries) },
+                data: { 
+					max_result: $("#max-result option:selected").val(),
+					input: JSON.stringify(queries) 
+				},
                 datatype: "application/json",
                 success: function (response) {
                     $('#divResult').html(response);
@@ -68,6 +71,13 @@
                     </div>
 					
                     <div class="col col-sm-5">
+						Max result
+						<select id="max-result" class="btn btn-default select-operator">
+							<option value="10">10</option>
+							<option value="25">25</option>
+							<option value="50">50</option>
+							<option value="100">100</option>
+						</select>
                         <button type="button" class="btn btn-primary btn-search">Search</button> 
                         <button type="button" class="btn btn-primary btn-clear">Clear</button>
                     </div>

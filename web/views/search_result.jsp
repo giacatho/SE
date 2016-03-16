@@ -14,8 +14,10 @@
         <h5>About ${result.noHits} results (${result.searchTime} miliseconds)</h3>
         <c:forEach var="resultItem" items="${result.resultItems}">
 			<div class="result-item">
-				<div class="title">Title: ${resultItem.docTitle}</div>
+				<div class="title">${resultItem.docTitle}</div>
+				<c:if test="${resultItem.docAuthors.size() gt 0}">
 				<div class="author">${fn:length(resultItem.docAuthors)} Authors: ${resultItem.docAuthors}</div>
+				</c:if>
 				<div class="key">DocID: ${resultItem.docKey}</div>
 				<div class="pubyear">Public Year: ${resultItem.docPubYear}</div>
 				<div class="pubvenue">Public Venue: ${resultItem.docPubVenue}</div>
