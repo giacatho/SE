@@ -17,11 +17,13 @@ public class Utils {
 	public static List<String> getKeywords (List<SearchInput> inputs) {
 		List<String> keyWords = new ArrayList();
         for (SearchInput input : inputs) {
-            String[] split = input.getKey().split(" ");
+            String[] split = input.getKey().replaceAll("\"","").split(" ");
             for (String key : split) {
                 keyWords.add(key);
             }
         }
+		
+		
 		
 		return keyWords;
 	}
