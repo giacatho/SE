@@ -64,10 +64,16 @@
             <div class="search-outline">
                 <div class="row">
                     <div class="col col-sm-7">
-                        <div class="search-zone"></div>
-                        <div class="margin">
-                            <a href="#" class="btn-add-item pull-right">Add more condition</a>
-                        </div>
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="search-zone"></div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12">
+								<a href="#" class="btn-add-item pull-right">Add more condition</a>
+							</div>
+						</div>
                     </div>
 					<div class="col col-sm-5">
 						<span>Display</span>
