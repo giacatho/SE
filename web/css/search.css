@@ -78,12 +78,24 @@ and open the template in the editor.
 
 
 .result-item {
+	font-family: arial,sans-serif;
 	margin-top: 0;
 	margin-bottom: 20px;
+	
+	color: #545454;
+	font-size: 13px;
+	line-height: 18.2px;
 }
 
 .result-item .title {
 	font-size: 18px;
 	font-weight: normal;
 	line-height: 21.6px;
+}
+
+.result-item .author {
+	color: #808080;
+	font-size: 13px;
+	font-weight: normal;
+	line-height: 18px;
 }

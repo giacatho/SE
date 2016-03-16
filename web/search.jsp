@@ -54,18 +54,8 @@
    });
 </script>
 
-<section class="content-header">
-<!--
-    <h1>
-        Location
-        <small>Location of events</small>
-    </h1>
-    <div id="dlgCreateLocationDumper"></div>-->
-</section>
-
 <!--Main content--> 
 <section class="content">
-    <!--Your Page Content Here--> 
     <div class="box box-default">
         <div class="box-header with-border" style="border-bottom-color: lightgray">
             <div class="search-outline">
@@ -75,10 +65,10 @@
                         <div class="margin">
                             <a href="#" class="btn-add-item pull-right">Add more condition</a>
                         </div>
-
                     </div>
-                    <div class="col">
-                        <button type="button" class="btn btn-primary btn-search"></i> Search</button> 
+					
+                    <div class="col col-sm-5">
+                        <button type="button" class="btn btn-primary btn-search">Search</button> 
                         <button type="button" class="btn btn-primary btn-clear">Clear</button>
                     </div>
                 </div>
@@ -86,9 +76,6 @@
         </div>        
             <div class="box-body">
                 <div id="divResult"></div>
-            </div>
-            <div class ="box-footer">
-                
             </div>
         </form>    
     </div>

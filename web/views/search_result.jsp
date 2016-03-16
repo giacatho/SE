@@ -16,7 +16,7 @@
 			<div class="result-item">
 				<div class="title">Title: ${resultItem.docTitle}</div>
 				<div class="author">${fn:length(resultItem.docAuthors)} Authors: ${resultItem.docAuthors}</div>
-				<div class="key">Key: ${resultItem.docKey}</div>
+				<div class="key">DocID: ${resultItem.docKey}</div>
 				<div class="pubyear">Public Year: ${resultItem.docPubYear}</div>
 				<div class="pubvenue">Public Venue: ${resultItem.docPubVenue}</div>
 				<div class="score">Score: ${resultItem.searchScore}</div>

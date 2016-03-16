@@ -23,7 +23,7 @@
             </select>
         </div>
         <input type="text" class="form-control">
-        <div class="input-group-btn">                
+        <div class="input-group-btn" style="padding-left: 10px;">                
             <select class="btn btn-default select-field" >
                 <option value="-1">Select a Field (optional)</option>
                 <c:choose>
