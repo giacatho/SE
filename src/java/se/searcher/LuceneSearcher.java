@@ -30,6 +30,7 @@ import se.searcher.model.Field;
 import se.searcher.model.SearchResult;
 import se.searcher.model.SearchInput;
 import se.searcher.model.SearchResultItem;
+import se.searcher.util.Utils;
 
 public class LuceneSearcher {
 
@@ -102,11 +103,14 @@ public class LuceneSearcher {
 		TopDocs hits = IS.search(query, numberOfHits);
 		long endTime = System.currentTimeMillis();
 
+		List<String> keywords = Utils.getKeywords(inputs);
 		List<SearchResultItem> resultItems = new ArrayList();
+		
 		for (ScoreDoc scoreDoc : hits.scoreDocs) {
 			Document doc = IS.doc(scoreDoc.doc);
 			
 			resultItems.add(new SearchResultItem(
+					keywords,
 					scoreDoc.score, 
 					doc.get("key"), 
 					doc.get("title"),

@@ -6,5 +6,8 @@
 
 <!-- Main Footer -->
 <footer class="main-footer">
-    <strong>Copyright &copy; 2016 Team 5 CI6226.</strong> All rights reserved.
+	&nbsp;
+	<div class="pull-right">
+        <strong>Copyright &copy; 2016 Team 5 CI6226.</strong> All rights reserved.
+    </div>
 </footer>

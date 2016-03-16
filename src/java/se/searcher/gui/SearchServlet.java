@@ -49,7 +49,6 @@ public class SearchServlet extends HttpServlet {
         SearchInput[] lstTemp = gson.fromJson(request.getParameter("input"), SearchInput[].class);
         List<SearchInput> searchInput = Arrays.asList(lstTemp);
 		
-		request.setAttribute("input", searchInput);
 		request.setAttribute("result", this.search(searchInput, maxResult));
 
         request.getRequestDispatcher("/views/search_result.jsp").forward(request, response);

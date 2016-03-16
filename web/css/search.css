@@ -99,3 +99,9 @@ and open the template in the editor.
 	font-weight: normal;
 	line-height: 18px;
 }
+
+.result-item em {
+	color: #444;
+	font-weight: bold;
+	font-style: normal;
+}

@@ -69,15 +69,15 @@
                             <a href="#" class="btn-add-item pull-right">Add more condition</a>
                         </div>
                     </div>
-					
-                    <div class="col col-sm-5">
-						Max result
+					<div class="col col-sm-5">
+						<span>Display</span>
 						<select id="max-result" class="btn btn-default select-operator">
 							<option value="10">10</option>
 							<option value="25">25</option>
 							<option value="50">50</option>
 							<option value="100">100</option>
 						</select>
+						<span style="padding-right: 5px;">results</span>&nbsp;
                         <button type="button" class="btn btn-primary btn-search">Search</button> 
                         <button type="button" class="btn btn-primary btn-clear">Clear</button>
                     </div>
