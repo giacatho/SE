@@ -17,9 +17,7 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 import se.constant.Constants;
 
 /**
@@ -29,29 +27,26 @@ import se.constant.Constants;
  */
 public class DblpXmlParser {
     public static void main(String[] args) throws IOException {
-        //testTextIndex();
-        testDrive();
+        parseDblpXML();
         System.out.print("here we go!!!");
     }
     
-    private static void testDrive(){
-        //String uri = "C:\\hz\\education\\NTU\\Projects\\IR\\dataset\\dblp.xml\\2.xml";
-        //String uri = "C:\\hz\\education\\NTU\\Projects\\IR\\dataset\\dblp.xml\\dblp.xml";
-         try {
-            SAXParserFactory parserFactor = SAXParserFactory.newInstance();
-            SAXParser parser = parserFactor.newSAXParser();
-            parser.getXMLReader().setFeature("http://xml.org/sax/features/validation", true);
-            HzXMLHandler handler = new HzXMLHandler();
-            parser.parse(new File(Constants.DATA_FILE_XML), handler);
-            
-        } catch (IOException e) {
-            System.out.println("Error reading URI: " + e.getMessage());
-        } catch (SAXException e) {
-            System.out.println("Error in parsing: " + e.getMessage());
-        } catch (ParserConfigurationException e) {
-            System.out.println("Error in XML parser configuration: "
-                    + e.getMessage());
-        }
+    private static void parseDblpXML(){
+		try {
+			SAXParserFactory parserFactor = SAXParserFactory.newInstance();
+			SAXParser parser = parserFactor.newSAXParser();
+			parser.getXMLReader().setFeature("http://xml.org/sax/features/validation", true);
+			HzXMLHandler handler = new HzXMLHandler();
+			parser.parse(new File(Constants.DATA_FILE_XML), handler);
+
+		} catch (IOException e) {
+			System.out.println("Error reading URI: " + e.getMessage());
+		} catch (SAXException e) {
+			System.out.println("Error in parsing: " + e.getMessage());
+		} catch (ParserConfigurationException e) {
+			System.out.println("Error in XML parser configuration: "
+				+ e.getMessage());
+		}
     }
     
 
