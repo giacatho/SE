@@ -23,8 +23,6 @@ public class Utils {
             }
         }
 		
-		
-		
 		return keyWords;
 	}
 }
