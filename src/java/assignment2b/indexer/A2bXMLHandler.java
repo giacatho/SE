@@ -1,55 +1,26 @@
 package assignment2b.indexer;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+import assignment2b.indexer.model.YearAndVenue;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-import se.constant.Constants;
 
 /**
  *
  * @author 
  */
 public class A2bXMLHandler extends DefaultHandler {
-	class YearAndVenue {
-		String year;
-		String venue;
-		
-		public YearAndVenue(String year, String venue) {
-			this.year = year;
-			this.venue = venue;
-		}
-		
-		@Override
-		public boolean equals(Object obj) {
-			if (obj == null) {
-				return false;
-			}
-			
-			YearAndVenue other = (YearAndVenue) obj;
-			return year.equalsIgnoreCase(other.year) && venue.equalsIgnoreCase(other.venue);
-		}
-
-		@Override
-		public int hashCode() {
-			int hash = 7;
-			hash = 89 * hash + (this.year != null ? this.year.hashCode() : 0);
-			hash = 89 * hash + (this.venue != null ? this.venue.hashCode() : 0);
-			return hash;
-		}
-	}
 	
-	Map<YearAndVenue, Integer> yearAndVenueToId = new HashMap();
-	int sequenNo = 1;
+	Map<YearAndVenue, List<String>> yearAndVenueToTitleList = new HashMap();
 			
     private Boolean insideDblpItem = false; //inside inproceedings or article
-    private BufferedWriter bw;
     private A2bDBLPItem item;
 	private String value;
     
@@ -67,24 +38,17 @@ public class A2bXMLHandler extends DefaultHandler {
     public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
 		if (!insideDblpItem) return;
 		
-        if (qName.equalsIgnoreCase("inproceedings")){
-			try {
-				insideDblpItem = false;
-				
-				YearAndVenue yearAndvenue = new YearAndVenue(item.getPubyear(), item.getPubvenue());
-				if (yearAndVenueToId.containsKey(yearAndvenue)) {
-					item.setYearAndVenueId(yearAndVenueToId.get(yearAndvenue));
-				} else {
-					// System.out.println("Year " + item.getPubyear() + ", venue " + item.getPubvenue());
-					item.setYearAndVenueId(sequenNo);
-					yearAndVenueToId.put(yearAndvenue, sequenNo);
-					sequenNo++;
-				}
-				
-				bw.write(item.toString()); //saved as a log file
-				//an option is to plugin the index thing here                    
-			} catch (IOException ex) {
-				Logger.getLogger(A2bXMLHandler.class.getName()).log(Level.SEVERE, null, ex);
+        if (qName.equalsIgnoreCase("inproceedings")) {
+			insideDblpItem = false;
+
+			YearAndVenue yearAndvenue = new YearAndVenue(item.getPubyear(), item.getPubvenue());
+			if (yearAndVenueToTitleList.containsKey(yearAndvenue)) {
+				yearAndVenueToTitleList.get(yearAndvenue).add(item.getTitle());
+			} else {
+				// System.out.println("Year " + item.getPubyear() + ", venue " + item.getPubvenue());
+				List<String> titleList = new ArrayList();
+				titleList.add(item.getTitle());
+				yearAndVenueToTitleList.put(yearAndvenue, titleList);
 			}
         }
             
@@ -111,19 +75,19 @@ public class A2bXMLHandler extends DefaultHandler {
     
 	@Override
     public void startDocument(){
-        try {
-            bw = new BufferedWriter(new FileWriter(Constants.DATA_FILE_TXT_A2B));
-        } catch (IOException ex) {
-            Logger.getLogger(A2bXMLHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
+	
 	@Override
     public void endDocument() {
         try {
-			System.out.println("Total " + (sequenNo - 1) + " YearAndVenue");
-            bw.close();
+			System.out.println("Total " + yearAndVenueToTitleList.size() + " YearAndVenue");
+			
+			A2bDblpIndexBuilder indexBuilder = new A2bDblpIndexBuilder(this.yearAndVenueToTitleList);
+			indexBuilder.buildIndex();
         } catch (IOException ex) {
             Logger.getLogger(A2bXMLHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+	
+	
 }
