@@ -12,6 +12,10 @@ package se.constant;
 public class Constants {
     public static final String INDEX_DIR = "/Users/nguyentritin/Documents/Lucene/data_output/index/";
 	public static final String INDEX_SIMPLE_ANALYZER_DIR = INDEX_DIR + "store_SimpleAnalyzer";
+	
     public static final String DATA_FILE_XML = "/Users/nguyentritin/Documents/Lucene/data_input/dblp.xml";
 	public static final String DATA_FILE_TXT = "/Users/nguyentritin/Documents/Lucene/data_output/dblp.txt";
+	
+	public static final String INDEX_ASSIGNMENT2B_DIR = INDEX_DIR + "assignment2b";
+	public static final String DATA_FILE_TXT_A2B = "/Users/nguyentritin/Documents/Lucene/data_output/dblp_a2b.txt";
 }
