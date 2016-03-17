@@ -83,7 +83,9 @@ public class A2bDblpIndexBuilder {
         doc.add(new Field("title", titles, myFieldType));
 		
 		doc.add(new StringField("pubyear", year, Field.Store.YES));
-        doc.add(new TextField("pubvenue", venue, Field.Store.YES));
+		// TODO try to change to StringField for venue but fail to search for the document with year/venue, why?
+        //doc.add(new TextField("pubvenue", venue, Field.Store.YES));
+		doc.add(new StringField("pubvenue", venue, Field.Store.YES));
         
         return doc;
     }
