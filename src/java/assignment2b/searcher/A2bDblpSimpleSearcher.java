@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.DocsEnum;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.Term;
@@ -16,6 +17,7 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.DocIdSetIterator;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -66,7 +68,7 @@ public class A2bDblpSimpleSearcher {
 			if (scoreDoc.doc != document.doc) {
 				System.out.println("Score: " + scoreDoc.score);
 				printDocumentInfo(searcher, scoreDoc.doc);
-				printAllTerms(searcher, scoreDoc.doc, "title");
+				//printAllTerms(searcher, scoreDoc.doc, "title");
 				System.out.println("\n\n\n\n");
 			}
 		}
@@ -125,10 +127,16 @@ public class A2bDblpSimpleSearcher {
 		Terms terms = searcher.getIndexReader().getTermVector(luceneDocId, field);
 		
 		TermsEnum termsEnum = terms.iterator();
-		BytesRef text;
+		BytesRef term;
 		System.out.println("Start to print terms: ");
-		while((text = termsEnum.next()) != null) {
-			System.out.print(text.utf8ToString() + ", ");
+		while((term = termsEnum.next()) != null) {
+			// enumerate through documents, in this case only one
+			DocsEnum docsEnum = termsEnum.docs(null, null); 
+			int docIdEnum;
+			while ((docIdEnum = docsEnum.nextDoc()) != DocIdSetIterator.NO_MORE_DOCS) {
+				// get the term frequency in the document 
+				System.out.println(term.utf8ToString()+ " " + docIdEnum + " " + docsEnum.freq()); 
+			}
 		}
 		System.out.println();
 	}
