@@ -22,6 +22,7 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldType;
+import org.apache.lucene.document.IntField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
@@ -68,9 +69,9 @@ public class A2bSimilarIndexBuilder {
 			Collections.sort(docSims, Collections.reverseOrder());
 			
 			addToIndex(i, docSims);
-			if (i % 99 == 0) {
+			if (i > 0 && i % 10 == 0) {
 				long endTS = System.currentTimeMillis();
-				System.out.println("Comlete 100, took " + (endTS - startTS)/1000 + " seconds");
+				System.out.println("Comlete " + i + ", took " + (endTS - startTS)/1000 + " seconds");
 			}
 		}
 		
@@ -88,23 +89,12 @@ public class A2bSimilarIndexBuilder {
 	private void addToIndex(int docId, List<DocSimilarity> docSims) throws IOException {
 		Document docToIndex = new Document();
 		
-		Document currDoc = _reader.document(docId);
-		docToIndex.add(new StringField("pubyear", currDoc.get("pubyear"), Field.Store.YES));
-		docToIndex.add(new StringField("pubvenue", currDoc.get("pubvenue"), Field.Store.YES));
+		docToIndex.add(new IntField("docId", docId, Field.Store.YES));
 		
-//		if (docId == 0)
-//			System.out.println("Start with 0");
-		
-//		System.out.println("Doc sim size: " + docSims.size());
 		for (int i = 0; i < 10 && i < docSims.size(); i++) {
-//			if (docId == 1) {
-//				System.out.print(i + " ");
-//			}
 			DocSimilarity docSim = docSims.get(i);
 			
-			Document lSimDoc = _reader.document(docSim.getLuceneDocId());
-			String simDoc = lSimDoc.get("pubvenue") + " " + lSimDoc.get("pubyear") + " - Similarity " + docSim.getCosSim();
-			docToIndex.add(new StringField("simdoc", simDoc, Field.Store.YES));
+			docToIndex.add(new IntField("simId", docSim.getLuceneDocId(), Field.Store.YES));
 		}
 		
         _writer.addDocument(docToIndex);
