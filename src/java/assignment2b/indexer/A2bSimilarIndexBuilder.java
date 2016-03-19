@@ -3,33 +3,24 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package assignment2b.searcher;
+package assignment2b.indexer;
 
 import assignment2b.indexer.model.DocSimilarity;
-import assignment2b.indexer.model.YearAndVenue;
-import experiment.CosineDocumentSimilarity;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.FieldType;
-import org.apache.lucene.document.IntField;
 import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import se.constant.Constants;
@@ -51,7 +42,7 @@ public class A2bSimilarIndexBuilder {
 				Paths.get(Constants.INDEX_ASSIGNMENT2B_DIR_TMP)));
 		
 		long startTS = System.currentTimeMillis();
-//		int numDocs = 10;
+
 		int numDocs = _reader.maxDoc();
 		System.out.println("Process total documents " + numDocs);
 		for (int i = 0; i < numDocs; i++) {
@@ -69,9 +60,9 @@ public class A2bSimilarIndexBuilder {
 			Collections.sort(docSims, Collections.reverseOrder());
 			
 			addToIndex(i, docSims);
-			if (i > 0 && i % 10 == 0) {
+			if (i % 99 == 0) {
 				long endTS = System.currentTimeMillis();
-				System.out.println("Comlete " + i + ", took " + (endTS - startTS)/1000 + " seconds");
+				System.out.println("Comlete 100, took " + (endTS - startTS)/1000 + " seconds");
 			}
 		}
 		
@@ -89,12 +80,16 @@ public class A2bSimilarIndexBuilder {
 	private void addToIndex(int docId, List<DocSimilarity> docSims) throws IOException {
 		Document docToIndex = new Document();
 		
-		docToIndex.add(new IntField("docId", docId, Field.Store.YES));
+		Document currDoc = _reader.document(docId);
+		docToIndex.add(new StringField("pubyear", currDoc.get("pubyear"), Field.Store.YES));
+		docToIndex.add(new StringField("pubvenue", currDoc.get("pubvenue"), Field.Store.YES));
 		
 		for (int i = 0; i < 10 && i < docSims.size(); i++) {
 			DocSimilarity docSim = docSims.get(i);
 			
-			docToIndex.add(new IntField("simId", docSim.getLuceneDocId(), Field.Store.YES));
+			Document lSimDoc = _reader.document(docSim.getLuceneDocId());
+			String simDoc = lSimDoc.get("pubvenue") + " " + lSimDoc.get("pubyear") + " - Similarity " + docSim.getCosSim();
+			docToIndex.add(new StringField("simdoc", simDoc, Field.Store.YES));
 		}
 		
         _writer.addDocument(docToIndex);
