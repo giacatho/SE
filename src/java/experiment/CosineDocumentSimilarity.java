@@ -26,9 +26,8 @@ import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.BytesRef;
 
 public class CosineDocumentSimilarity {
-
-    public static final String CONTENT = "Content";
-
+	private static final String CONTENT = "content";
+	
     private final Set<String> terms = new HashSet();
     private final RealVector v1;
     private final RealVector v2;

@@ -48,8 +48,7 @@ public class A2bDblpIndexBuilder {
 	}
 	
 	public void buildIndex() throws IOException {
-        initIndexWriter(Constants.INDEX_ASSIGNMENT2B_DIR, new SimpleAnalyzer());
-		
+		initIndexWriter(Constants.INDEX_ASSIGNMENT2B_DIR_TMP, new SimpleAnalyzer());
 		for (Map.Entry<YearAndVenue, List<String>> entrySet : yearAndVenueToTitleList.entrySet()) {
 			YearAndVenue yearAndVenue = entrySet.getKey();
 			List<String> titleList = entrySet.getValue();

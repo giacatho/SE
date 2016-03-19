@@ -5,8 +5,6 @@
  */
 package se.searcher.util;
 
-import experiment.CosineDocumentSimilarity;
-import static experiment.CosineDocumentSimilarity.CONTENT;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,14 +71,21 @@ public class Utils {
 		}
 	}
 	
+	public static void printDocumentYearAndVenue(IndexSearcher searcher, int luceDocId) throws IOException {
+		Document doc = searcher.doc(luceDocId);
+		
+		System.out.println("Year: " + doc.get("pubyear") + ". Venue " + doc.get("pubvenue"));
+	}
+	
 	public static double getCosineSimilarity(IndexReader reader, int docId1, int docId2)
             throws IOException {
 		Set<String> allTerms = new HashSet();
 		
 		Map<String, Integer> termFrequencies1 = getTermFrequencies(reader, docId1, allTerms);
-		RealVector v1 = toRealVector(termFrequencies1, allTerms);
-		
 		Map<String, Integer> termFrequencies2 = getTermFrequencies(reader, docId2, allTerms);
+		
+		// Called only after term frequencies have been call
+		RealVector v1 = toRealVector(termFrequencies1, allTerms);
 		RealVector v2 = toRealVector(termFrequencies2, allTerms);
 		
 		return (v1.dotProduct(v2)) / (v1.getNorm() * v2.getNorm());
@@ -88,7 +93,7 @@ public class Utils {
 	
 	public static Map<String, Integer> getTermFrequencies(IndexReader reader, int docId, Set<String> allTerms)
             throws IOException {
-        Terms vector = reader.getTermVector(docId, CONTENT);
+        Terms vector = reader.getTermVector(docId, "title");
 		if (vector == null) 
 			return null;
 		
