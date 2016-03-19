@@ -1,12 +1,9 @@
-package assignment2b.searcher;
+package assignment2a.searcher;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.List;
-import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.BooleanClause;
@@ -24,31 +21,29 @@ import se.searcher.util.Utils;
  *
  * @author nguyentritin
  */
-public class A2bDblpSimpleSearcher {
+public class A2aDblpSimpleSearcher {
 	public static void main(String[] args) throws IOException, ParseException {
 		IndexReader reader = DirectoryReader.open(FSDirectory.open(
 				Paths.get(Constants.INDEX_ASSIGNMENT2B_DIR)));
 		IndexSearcher searcher = new IndexSearcher(reader);
-		ScoreDoc document = search(searcher, "2012", "GLOBECOM");
+		ScoreDoc document = search(searcher, "2005");
 		
 		if (document == null) {
-			System.out.println("Year and venue are not found");
+			System.out.println("Document for Year not found");
 			return;
 		}
 		
 		System.out.println("Found with score " + document.score);
-		printDocumentInfo(searcher, document.doc);
+		Utils.printDocumentInfo(searcher, document.doc);
 		Utils.printAllTerms(searcher, document.doc, "title");
 	}
 	
-	public static ScoreDoc search(IndexSearcher searcher, String year, 
-			String venue) throws IOException, ParseException {
+	public static ScoreDoc search(IndexSearcher searcher, String year) 
+			throws IOException, ParseException {
 		TermQuery yearQuery = new TermQuery(new Term("pubyear", year));
-		TermQuery venueQuery = new TermQuery(new Term("pubvenue", venue));
 		
 		BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
 		queryBuilder.add(yearQuery, BooleanClause.Occur.MUST);
-		queryBuilder.add(venueQuery, BooleanClause.Occur.MUST);
 
 		Query query = queryBuilder.build();
 		
@@ -59,16 +54,5 @@ public class A2bDblpSimpleSearcher {
 		}
 
 		return results.scoreDocs[0];
-	}
-	
-	
-	public static void printDocumentInfo(IndexSearcher searcher, int luceneDocId) throws IOException {
-		Document doc = searcher.doc(luceneDocId);
-		
-		List<IndexableField> allFields = doc.getFields();
-		//System.out.println("Start to print document: ");
-		for (IndexableField field : allFields) {
-			System.out.println(field.name() + ": " + doc.get(field.name()));
-		}
 	}
 }
