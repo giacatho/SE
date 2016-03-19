@@ -74,7 +74,7 @@ public class Utils {
 	public static void printDocumentYearAndVenue(IndexSearcher searcher, int luceDocId) throws IOException {
 		Document doc = searcher.doc(luceDocId);
 		
-		System.out.println("Year: " + doc.get("pubyear") + ". Venue " + doc.get("pubvenue"));
+		System.out.println("Year: " + doc.get("pubyear") + ". Venue " + doc.get("pubvenue") + ".");
 	}
 	
 	public static double getCosineSimilarity(IndexReader reader, int docId1, int docId2)

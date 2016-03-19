@@ -1,9 +1,14 @@
 package assignment2b.searcher;
 
+import assignment2b.indexer.model.DocSimilarity;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexableField;
@@ -25,23 +30,66 @@ import se.searcher.util.Utils;
  * @author nguyentritin
  */
 public class A2bDblpSimpleSearcher {
-	public static void main(String[] args) throws IOException, ParseException {
-		IndexReader reader = DirectoryReader.open(FSDirectory.open(
+	private final IndexReader reader;
+	private final IndexSearcher searcher;
+			
+	public A2bDblpSimpleSearcher() throws IOException {
+		this.reader = DirectoryReader.open(FSDirectory.open(
 				Paths.get(Constants.INDEX_ASSIGNMENT2B_DIR_TMP)));
-		IndexSearcher searcher = new IndexSearcher(reader);
-		ScoreDoc document = search(searcher, "2012", "GLOBECOM");
+		this.searcher = new IndexSearcher(reader);
+	}
+	
+	public static void main(String[] args) throws IOException, ParseException {
+		A2bDblpSimpleSearcher searcher = new A2bDblpSimpleSearcher();
+		
+		searcher.searchSimilarity("2010", "FOCS");
+		searcher.searchSimilarity("2011", "INFOCOM");
+		searcher.searchSimilarity("2012", "WSDM");
+		searcher.searchSimilarity("2013", "CIKM");
+		searcher.searchSimilarity("2014", "SIGIR");
+		searcher.searchSimilarity("2015", "KDD");
+		
+		searcher.close();
+	}
+	
+	public void searchSimilarity(String year, String venue) throws IOException, ParseException {
+		ScoreDoc document = this.searchDocument(year, venue);
 		
 		if (document == null) {
 			System.out.println("Year and venue are not found");
 			return;
 		}
 		
-		System.out.println("Found with score " + document.score);
-		printDocumentInfo(searcher, document.doc);
-		Utils.printAllTerms(searcher, document.doc, "title");
+		Utils.printDocumentYearAndVenue(this.searcher, document.doc);
+		
+		int numDocs = reader.maxDoc();
+		List<DocSimilarity> docSims = new ArrayList();
+		for (int i = 0; i < numDocs; i++) {
+			if (i == document.doc)
+				continue;
+
+			double cosSim = Utils.getCosineSimilarity(reader, i, document.doc);
+
+			docSims.add(new DocSimilarity(i, cosSim));
+		}
+
+		Collections.sort(docSims, Collections.reverseOrder());
+		
+		System.out.println("Result for " + venue + " " + year);
+		printSearchResult(docSims);
 	}
 	
-	public static ScoreDoc search(IndexSearcher searcher, String year, 
+	private void printSearchResult(List<DocSimilarity> docSims) throws IOException {
+		for (int i = 0; i < 10 && i < docSims.size(); i++) {
+			DocSimilarity docSim = docSims.get(i);
+			
+			Document lSimDoc = this.reader.document(docSim.getLuceneDocId());
+			System.out.println(lSimDoc.get("pubvenue") + " " + lSimDoc.get("pubyear") + 
+					" - Similarity " + docSim.getCosSim());
+		}
+    }
+	
+	private ScoreDoc searchDocument(String year, 
 			String venue) throws IOException, ParseException {
 		TermQuery yearQuery = new TermQuery(new Term("pubyear", year));
 		TermQuery venueQuery = new TermQuery(new Term("pubvenue", venue));
@@ -52,7 +100,7 @@ public class A2bDblpSimpleSearcher {
 
 		Query query = queryBuilder.build();
 		
-		TopDocs results = searcher.search(query, 10);
+		TopDocs results = this.searcher.search(query, 10);
 		
 		if (results.totalHits == 0) {
 			return null;
@@ -61,14 +109,7 @@ public class A2bDblpSimpleSearcher {
 		return results.scoreDocs[0];
 	}
 	
-	
-	public static void printDocumentInfo(IndexSearcher searcher, int luceneDocId) throws IOException {
-		Document doc = searcher.doc(luceneDocId);
-		
-		List<IndexableField> allFields = doc.getFields();
-		//System.out.println("Start to print document: ");
-		for (IndexableField field : allFields) {
-			System.out.println(field.name() + ": " + doc.get(field.name()));
-		}
+	public void close() throws IOException {
+		this.reader.close();
 	}
 }
