@@ -24,7 +24,7 @@ import se.searcher.util.Utils;
 public class A2aDblpSimpleSearcher {
 	public static void main(String[] args) throws IOException, ParseException {
 		IndexReader reader = DirectoryReader.open(FSDirectory.open(
-				Paths.get(Constants.INDEX_ASSIGNMENT2B_DIR)));
+				Paths.get(Constants.INDEX_ASSIGNMENT2A_DIR)));
 		IndexSearcher searcher = new IndexSearcher(reader);
 		ScoreDoc document = search(searcher, "2005");
 		

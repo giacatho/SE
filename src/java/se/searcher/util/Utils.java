@@ -5,11 +5,20 @@
  */
 package se.searcher.util;
 
+import experiment.CosineDocumentSimilarity;
+import static experiment.CosineDocumentSimilarity.CONTENT;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.RealVector;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DocsEnum;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.Terms;
 import org.apache.lucene.index.TermsEnum;
@@ -63,5 +72,47 @@ public class Utils {
 			System.out.println(field.name() + ": " + doc.get(field.name()));
 		}
 	}
+	
+	public static double getCosineSimilarity(IndexReader reader, int docId1, int docId2)
+            throws IOException {
+		Set<String> allTerms = new HashSet();
+		
+		Map<String, Integer> termFrequencies1 = getTermFrequencies(reader, docId1, allTerms);
+		RealVector v1 = toRealVector(termFrequencies1, allTerms);
+		
+		Map<String, Integer> termFrequencies2 = getTermFrequencies(reader, docId2, allTerms);
+		RealVector v2 = toRealVector(termFrequencies2, allTerms);
+		
+		return (v1.dotProduct(v2)) / (v1.getNorm() * v2.getNorm());
+    }
+	
+	public static Map<String, Integer> getTermFrequencies(IndexReader reader, int docId, Set<String> allTerms)
+            throws IOException {
+        Terms vector = reader.getTermVector(docId, CONTENT);
+		if (vector == null) 
+			return null;
+		
+        TermsEnum termsEnum = vector.iterator();
+		
+        Map<String, Integer> frequencies = new HashMap();
+        BytesRef text;
+        while ((text = termsEnum.next()) != null) {
+            String term = text.utf8ToString();
+            int freq = (int) termsEnum.totalTermFreq();
+            frequencies.put(term, freq);
+			allTerms.add(term);
+        }
+        return frequencies;
+    }
+	
+	private static RealVector toRealVector(Map<String, Integer> map, Set<String> allTerms) {
+        RealVector vector = new ArrayRealVector(allTerms.size());
+        int i = 0;
+        for (String term : allTerms) {
+            int value = map.containsKey(term) ? map.get(term) : 0;
+            vector.setEntry(i++, value);
+        }
+        return (RealVector) vector.mapDivide(vector.getL1Norm());
+    }
 	
 }

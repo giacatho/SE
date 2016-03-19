@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.SimpleAnalyzer;
+import org.apache.lucene.analysis.core.StopAnalyzer;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldType;
@@ -47,7 +49,11 @@ public class A2aDblpIndexBuilder {
 	}
 	
 	public void buildIndex() throws IOException {
-        initIndexWriter(Constants.INDEX_ASSIGNMENT2A_DIR, new SimpleAnalyzer());
+		 // Title is all English
+		System.out.println("Stop word set " + new EnglishAnalyzer().getStopwordSet());
+		
+		// English Analyzer support stop words with stemming
+        initIndexWriter(Constants.INDEX_ASSIGNMENT2A_DIR, new EnglishAnalyzer());
 		
 		for (Map.Entry<String, List<String>> entrySet : yearToTitleList.entrySet()) {
 			String year = entrySet.getKey();
