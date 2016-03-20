@@ -81,8 +81,8 @@ public class A2aDblpIndexBuilder {
 	private Document getLuceneDocument(String year, String titles) {
         Document doc = new Document();
         
-		// Tin: Title and author needs term vector to support phrase query
-		FieldType myFieldType = new FieldType(TextField.TYPE_STORED);
+		// In this assignment, term vector needs to be stored but the title itself does not
+		FieldType myFieldType = new FieldType(TextField.TYPE_NOT_STORED);
 		myFieldType.setStoreTermVectors(true);
 		
         doc.add(new Field("title", titles, myFieldType));

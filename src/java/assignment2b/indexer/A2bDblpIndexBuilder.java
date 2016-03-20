@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.SimpleAnalyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldType;
@@ -48,7 +49,7 @@ public class A2bDblpIndexBuilder {
 	}
 	
 	public void buildIndex() throws IOException {
-		initIndexWriter(Constants.INDEX_ASSIGNMENT2B_DIR_TMP, new SimpleAnalyzer());
+		initIndexWriter(Constants.INDEX_ASSIGNMENT2B_DIR_TMP, new StandardAnalyzer());
 		for (Map.Entry<YearAndVenue, List<String>> entrySet : yearAndVenueToTitleList.entrySet()) {
 			YearAndVenue yearAndVenue = entrySet.getKey();
 			List<String> titleList = entrySet.getValue();
@@ -75,15 +76,13 @@ public class A2bDblpIndexBuilder {
 	private Document getLuceneDocument(String year, String venue, String titles){
         Document doc = new Document();
         
-		// Tin: Title and author needs term vector to support phrase query
-		FieldType myFieldType = new FieldType(TextField.TYPE_STORED);
+		// In this assignment, term vector needs to be stored but the title itself does not
+		FieldType myFieldType = new FieldType(TextField.TYPE_NOT_STORED);
 		myFieldType.setStoreTermVectors(true);
 		
         doc.add(new Field("title", titles, myFieldType));
 		
 		doc.add(new StringField("pubyear", year, Field.Store.YES));
-		// TODO try to change to StringField for venue but fail to search for the document with year/venue, why?
-        //doc.add(new TextField("pubvenue", venue, Field.Store.YES));
 		doc.add(new StringField("pubvenue", venue, Field.Store.YES));
         
         return doc;

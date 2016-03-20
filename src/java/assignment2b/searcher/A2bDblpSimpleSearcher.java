@@ -42,12 +42,12 @@ public class A2bDblpSimpleSearcher {
 	public static void main(String[] args) throws IOException, ParseException {
 		A2bDblpSimpleSearcher searcher = new A2bDblpSimpleSearcher();
 		
-		searcher.searchSimilarity("2010", "FOCS");
-		searcher.searchSimilarity("2011", "INFOCOM");
-		searcher.searchSimilarity("2012", "WSDM");
-		searcher.searchSimilarity("2013", "CIKM");
-		searcher.searchSimilarity("2014", "SIGIR");
 		searcher.searchSimilarity("2015", "KDD");
+		searcher.searchSimilarity("2014", "SIGIR");
+		searcher.searchSimilarity("2013", "CIKM");
+		searcher.searchSimilarity("2012", "WSDM");
+		searcher.searchSimilarity("2011", "INFOCOM");
+		searcher.searchSimilarity("2010", "CVPR");
 		
 		searcher.close();
 	}
