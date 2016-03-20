@@ -7,10 +7,13 @@ package se.searcher.util;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
@@ -105,7 +108,8 @@ public class Utils {
             String term = text.utf8ToString();
             int freq = (int) termsEnum.totalTermFreq();
             frequencies.put(term, freq);
-			allTerms.add(term);
+			if (allTerms != null)
+				allTerms.add(term);
         }
         return frequencies;
     }
@@ -120,4 +124,19 @@ public class Utils {
         return (RealVector) vector.mapDivide(vector.getL1Norm());
     }
 	
+	// http://stackoverflow.com/a/11648106
+	public static <K, V extends Comparable<? super V>> List<Entry<K, V>> getEntriesSortedByValues(
+			Map<K,V> map) {
+		List<Entry<K,V>> sortedEntries = new ArrayList<Entry<K,V>>(map.entrySet());
+		Collections.sort(sortedEntries,
+			new Comparator<Entry<K,V>>() {
+				@Override
+				public int compare(Entry<K,V> e1, Entry<K,V>e2) {
+					return e2.getValue().compareTo(e1.getValue());
+				}
+			}
+		);
+		
+		return sortedEntries;
+	}
 }
