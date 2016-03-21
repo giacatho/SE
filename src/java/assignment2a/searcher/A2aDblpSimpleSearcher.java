@@ -5,6 +5,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
@@ -36,8 +37,10 @@ public class A2aDblpSimpleSearcher {
 	
 	public static void main(String[] args) throws IOException, ParseException {
 		A2aDblpSimpleSearcher searcher = new A2aDblpSimpleSearcher();
-		
-		searcher.searchCommonTopic("2016");
+
+		for (int i=1995; i<=2016; i++) {
+			searcher.searchCommonTopic(i + "");
+		}
 		
 		searcher.close();
 	}
@@ -50,7 +53,10 @@ public class A2aDblpSimpleSearcher {
 			return;
 		}
 		
-		Map<String, Integer> termFrequencyMap = Utils.getTermFrequencies(this.reader, document.doc, null);
+		Document doc = this.reader.document(document.doc);
+		System.out.println("Year " + doc.get("pubyear"));
+		
+		Map<String, Integer> termFrequencyMap = Utils.getTermFrequencies(this.reader, document.doc, true);
 		List<Entry<String, Integer>> sortedTermFequencies = Utils.getEntriesSortedByValues(termFrequencyMap);
 		this.printSearchResult(sortedTermFequencies);
 	}
@@ -58,12 +64,7 @@ public class A2aDblpSimpleSearcher {
 	private ScoreDoc searchDocument(String year) throws IOException, ParseException {
 		TermQuery yearQuery = new TermQuery(new Term("pubyear", year));
 		
-		BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
-		queryBuilder.add(yearQuery, BooleanClause.Occur.MUST);
-
-		Query query = queryBuilder.build();
-		
-		TopDocs results = this.searcher.search(query, 1);
+		TopDocs results = this.searcher.search(yearQuery, 1);
 		
 		if (results.totalHits == 0) {
 			return null;

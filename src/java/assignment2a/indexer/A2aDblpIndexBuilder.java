@@ -1,6 +1,7 @@
 package assignment2a.indexer;
 
 
+import experiment.NGramEnglishAnalyzer;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -39,7 +40,7 @@ public class A2aDblpIndexBuilder {
 		System.out.println("Stop word set " + new EnglishAnalyzer().getStopwordSet());
 		
 		// English Analyzer support stop words with stemming
-        initIndexWriter(Constants.INDEX_ASSIGNMENT2A_DIR, new EnglishAnalyzer());
+        initIndexWriter(Constants.INDEX_ASSIGNMENT2A_DIR, new NGramEnglishAnalyzer());
 		
 		for (Map.Entry<String, List<String>> entrySet : yearToTitleList.entrySet()) {
 			String year = entrySet.getKey();

@@ -114,6 +114,32 @@ public class Utils {
         return frequencies;
     }
 	
+	public static Map<String, Integer> getTermFrequencies(IndexReader reader, int docId, boolean mustBeBigram)
+            throws IOException {
+        Terms vector = reader.getTermVector(docId, "title");
+		if (vector == null) 
+			return null;
+		
+        TermsEnum termsEnum = vector.iterator();
+		
+        Map<String, Integer> frequencies = new HashMap();
+        BytesRef text;
+        while ((text = termsEnum.next()) != null) {
+            String term = text.utf8ToString();
+            int freq = (int) termsEnum.totalTermFreq();
+			
+			if (mustBeBigram) {
+				String[] multiTerms = term.split(" ");
+				if (multiTerms.length != 2 || "_".equals(multiTerms[0]) || "_".equals(multiTerms[1]))
+					continue;
+			}
+			
+            frequencies.put(term, freq);
+        }
+		
+        return frequencies;
+    }
+	
 	private static RealVector toRealVector(Map<String, Integer> map, Set<String> allTerms) {
         RealVector vector = new ArrayRealVector(allTerms.size());
         int i = 0;
