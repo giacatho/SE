@@ -29,7 +29,7 @@ public class HzXMLHandler extends DefaultHandler {
 	@Override
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
 		value = "";
-        if (qName.equalsIgnoreCase("inproceedings ") || qName.equalsIgnoreCase("article")) {
+        if (qName.equalsIgnoreCase("inproceedings") || qName.equalsIgnoreCase("article")) {
             insideDblpItem = true;
             item = new DBLP_Item(qName);
             item.setKey(atts.getValue("key"));
@@ -41,7 +41,7 @@ public class HzXMLHandler extends DefaultHandler {
     public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
 		if (!insideDblpItem) return;
 		
-        if (qName.equalsIgnoreCase("inproceedings ") || qName.equalsIgnoreCase("article")){
+        if (qName.equalsIgnoreCase("inproceedings") || qName.equalsIgnoreCase("article")){
 			try {
 				insideDblpItem = false;
 				bw.write(item.toString()); //saved as a log file
