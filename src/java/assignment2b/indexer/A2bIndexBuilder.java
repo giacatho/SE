@@ -31,12 +31,19 @@ public class A2bIndexBuilder {
 	
 	public void buildIndex() throws IOException {
 		initIndexWriter(Constants.INDEX_ASSIGNMENT2B_DIR, new StandardAnalyzer());
+		
+		int count = 0;
 		for (Map.Entry<YearVenue, List<String>> entrySet : yearVenueToTitleList.entrySet()) {
 			YearVenue yearVenue = entrySet.getKey();
 			List<String> titleList = entrySet.getValue();
 			
 			// TODO need more beautiful title, not use to string
 			this.addToIndex(yearVenue.getYear(), yearVenue.getVenue(), titleList.toString()); 
+			
+			if (count % 1000 == 0) {
+                System.out.print(".");
+            }
+            count++;
 		}
 		
 		this.close();

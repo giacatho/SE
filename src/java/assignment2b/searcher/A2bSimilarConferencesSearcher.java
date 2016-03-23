@@ -45,7 +45,7 @@ public class A2bSimilarConferencesSearcher {
 		}
 		
 		Document doc = this.searcher.doc(document.doc);
-		System.out.println("Year: " + doc.get("pubyear") + ". Venue " + doc.get("pubvenue") + ".");
+		System.out.println("Year: " + doc.get("pubyear") + ". Venue: " + doc.get("pubvenue") + ".");
 		
 		int numDocs = reader.maxDoc();
 		List<DocSimilarity> docSims = new ArrayList();

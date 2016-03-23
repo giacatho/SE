@@ -4,4 +4,4 @@
 
 Usage:
 1. To build the index, run the A2bXmlParser.java.
-2. To search, run A2bSearchSimilarConference.java
+2. To search, run A2bSimilarConferencesSearcher.java

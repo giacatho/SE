@@ -50,6 +50,10 @@ public class A2bXmlHandler extends DefaultHandler {
 			else
 				throw new RuntimeException("Impossible state");
 			
+			if (item.getPubyear() == null || item.getPubvenue() == null)
+				// Just ignore this paper
+				return;
+			
 			YearVenue yearVenue = new YearVenue(item.getPubyear(), item.getPubvenue());
 			if (yearVenueToTitleList.containsKey(yearVenue)) {
 				yearVenueToTitleList.get(yearVenue).add(item.getTitle());
