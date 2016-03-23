@@ -23,8 +23,8 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import se.constant.Constants;
-import se.searcher.util.Utils;
+import common.Constants;
+import common.Utils;
 
 /**
  *
@@ -36,10 +36,10 @@ public class A2bSimilarIndexBuilder {
 	
 	
 	public void buildIndex() throws IOException {
-		initIndexWriter(Constants.INDEX_ASSIGNMENT2B_DIR, new StandardAnalyzer());
+		initIndexWriter(Constants.INDEX_ASSIGNMENT2B_EXTRA, new StandardAnalyzer());
 
 		_reader = DirectoryReader.open(FSDirectory.open(
-				Paths.get(Constants.INDEX_ASSIGNMENT2B_DIR_TMP)));
+				Paths.get(Constants.INDEX_ASSIGNMENT2B_DIR)));
 		
 		long startTS = System.currentTimeMillis();
 
