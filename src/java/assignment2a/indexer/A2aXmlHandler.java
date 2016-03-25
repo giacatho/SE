@@ -2,20 +2,13 @@ package assignment2a.indexer;
 
 import assignment2a.indexer.model.A2aDBLPItem;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class A2aXmlHandler extends DefaultHandler {
+	A2aIndexBuilder a2IndexBuilder;
 	
-	Map<String, List<String>> yearToTitleList = new HashMap();
-			
 	private int noInproceedings = 0;
 	private int noArticles = 0;
     private Boolean insideDblpItem = false; //inside inproceedings or article
@@ -38,6 +31,12 @@ public class A2aXmlHandler extends DefaultHandler {
         if (qName.equalsIgnoreCase("inproceedings") || qName.equalsIgnoreCase("article")) {
 			insideDblpItem = false;
 
+			if (item.getPubyear() == null || item.getPubvenue() == null || item.getTitle() == null) {
+				// Just ignore it
+				System.out.print("-");
+				return;
+			}
+			
 			if (qName.equalsIgnoreCase("inproceedings"))
 				noInproceedings++;
 			else if (qName.equalsIgnoreCase("article"))
@@ -45,27 +44,32 @@ public class A2aXmlHandler extends DefaultHandler {
 			else
 				throw new RuntimeException("Impossible state");
 			
-			String year = item.getPubyear();
-			if (year == null || year.isEmpty())
-				return;
+			if ((noInproceedings + noArticles) % 10000 == 0) {
+				System.out.print(".");
+			}
 			
-			if (yearToTitleList.containsKey(year)) {
-				yearToTitleList.get(year).add(item.getTitle());
-			} else {
-				List<String> titleList = new ArrayList();
-				titleList.add(item.getTitle());
-				yearToTitleList.put(year, titleList);
+			try {
+				this.a2IndexBuilder.addToIndex(item.getPubyear(), item.getPubvenue(), item.getTitle(), item.getAuthors());
+			} catch (IOException ex) {
+				throw new RuntimeException(ex.toString());
 			}
         }
-            
-		else if (qName.equalsIgnoreCase("title")) {
-			item.setTitle(value);
-		}
 		
 		else if (qName.equalsIgnoreCase("year")) {
 			item.setPubyear(value.trim());
 		}
 		
+		else if (qName.equalsIgnoreCase("booktitle") || qName.equalsIgnoreCase("journal") ){
+			item.setPubvenue(value.trim());
+		}
+            
+		else if (qName.equalsIgnoreCase("title")) {
+			item.setTitle(value.trim());
+		}
+		
+		else if (qName.equalsIgnoreCase("author")) {
+			item.addAuthor(value.trim());
+		}
     }
     
 	@Override
@@ -77,26 +81,26 @@ public class A2aXmlHandler extends DefaultHandler {
     }
     
 	@Override
-    public void startDocument(){
-		System.out.println("Start to parse the dblp.xml");
+    public void startDocument() {
+		System.out.println("Start to parse and index dblp.xml");
+		try {
+			this.a2IndexBuilder = new A2aIndexBuilder();
+		} catch (IOException ex) {
+			throw new RuntimeException(ex.toString());
+		}
     }
 	
 	@Override
     public void endDocument() {
-        try {
-			System.out.println("Parsing has been completed.");
-			System.out.println(String.format("Total %d inproceedings and %d articles.", 
-					noInproceedings, noArticles));
-			System.out.println("Total " + yearToTitleList.size() + " year");
-			System.out.println("They are: " + yearToTitleList.keySet());
-			
-			System.out.println("Start to indexing");
-			A2aIndexBuilder indexBuilder = new A2aIndexBuilder(this.yearToTitleList);
-			indexBuilder.buildIndex();
-			System.out.println("Finish indexing");
-        } catch (IOException ex) {
-            Logger.getLogger(A2aXmlHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
+		System.out.println("Parsing and indexing has been completed.");
+		System.out.println(String.format("Total %d inproceedings and %d articles.", 
+				noInproceedings, noArticles));
+
+		try {
+			this.a2IndexBuilder.close();
+		} catch (IOException ex) {
+			throw new RuntimeException(ex.toString());
+		}
     }
 	
 	

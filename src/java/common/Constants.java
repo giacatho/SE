@@ -10,7 +10,7 @@ package common;
  * @author giacatho
  */
 public class Constants {
-	private static final String DATA_FOLDER = "/Users/nguyentritin/Documents/Lucene";
+	private static final String DATA_FOLDER = "/Users/giacatho/Documents/Lucene";
 	public static final String DATA_FILE_XML = DATA_FOLDER + "/data_input/dblp.xml";
 	public static final String DATA_FILE_TXT = DATA_FOLDER + "/data_output/dblp.txt";
 	

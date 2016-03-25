@@ -17,22 +17,36 @@ import java.util.Map.Entry;
 import java.util.Set;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
-import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DocsEnum;
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.Terms;
 import org.apache.lucene.index.TermsEnum;
 import org.apache.lucene.search.DocIdSetIterator;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.util.BytesRef;
 import assignment1.searcher.model.SearchInput;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
 
 /**
  *
  * @author nguyentritin
  */
 public class Utils {
+	public static IndexWriter initIndexWriter(String storePath, Analyzer analyzer) throws IOException {
+        Path pathIndexStore = Paths.get(storePath);
+        Directory indexStoreDir = FSDirectory.open(pathIndexStore);
+        IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
+        iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+        return new IndexWriter(indexStoreDir, iwc);
+    }
+	
 	public static List<String> getKeywords (List<SearchInput> inputs) {
 		List<String> keyWords = new ArrayList();
         for (SearchInput input : inputs) {
@@ -98,32 +112,86 @@ public class Utils {
 	 */
 	public static Map<String, Integer> getTermFrequencies(IndexReader reader, int docId, 
 			boolean mustBeBiword, Set<String> allTerms) throws IOException {
-        Terms vector = reader.getTermVector(docId, "title");
+        Map<String, Integer> termFrequencies = new HashMap();
+		
+		Terms vector = reader.getTermVector(docId, "title");
 		if (vector == null) 
 			return null;
 		
         TermsEnum termsEnum = vector.iterator();
 		
-        Map<String, Integer> frequencies = new HashMap();
         BytesRef text;
         while ((text = termsEnum.next()) != null) {
             String term = text.utf8ToString();
             int freq = (int) termsEnum.totalTermFreq();
 			
-			if (mustBeBiword) {
-				// Only add bi-words terms and without "_". For example, "experimentation _", "_ algorithm"
-				String[] multiTerms = term.split(" ");
-				if (multiTerms.length != 2 || "_".equals(multiTerms[0]) || "_".equals(multiTerms[1]))
-					continue;
+			if (term.contains("_")) {
+				continue;
 			}
 			
-            frequencies.put(term, freq);
+			if (mustBeBiword && term.split(" ").length !=2) {
+				continue;
+			}
+			
+            termFrequencies.put(term, freq);
 			if (allTerms != null)
 				allTerms.add(term);
         }
 		
-        return frequencies;
+        return termFrequencies;
     }
+	
+	public static List<Entry<String, Integer>> getTopTermFrequencies(IndexReader reader,
+			ScoreDoc[] scoreDocs, boolean mustBeBiword) throws IOException {
+		Map<String, Integer> termFrequencies = Utils.getAllTermFrequencies(reader, scoreDocs, mustBeBiword);
+		
+		List<Entry<String, Integer>> sortedTermFrequencies = Utils.getEntriesSortedByValues(termFrequencies);
+		
+		List<Entry<String, Integer>> topTerms = new ArrayList();
+		for (int i=0; i < 10 && i < sortedTermFrequencies.size(); i++) {
+			topTerms.add(sortedTermFrequencies.get(i));
+		}
+		
+		return topTerms;
+	}
+	
+	private static Map<String, Integer> getAllTermFrequencies(IndexReader reader, 
+			ScoreDoc[] scoreDocs, boolean mustBeBiword) throws IOException {
+		Map<String, Integer> termFrequencies = new HashMap();
+		
+		for (ScoreDoc scoreDoc: scoreDocs) {
+			Terms vector = reader.getTermVector(scoreDoc.doc, "title");
+			if (vector == null) {
+				// Some title is funny, just "@", so no term vector, we just igonre
+				// System.out.println("No term vector for title field for document " + scoreDoc.doc + ", skipped");
+				continue;
+			}
+
+			TermsEnum termsEnum = vector.iterator();
+
+			BytesRef text;
+			while ((text = termsEnum.next()) != null) {
+				String term = text.utf8ToString();
+				int freq = (int) termsEnum.totalTermFreq();
+
+				if (term.contains("_")) {
+					continue;
+				}
+
+				if (mustBeBiword && term.split(" ").length !=2) {
+					continue;
+				}
+
+				if (termFrequencies.containsKey(term)) {
+					termFrequencies.put(term, termFrequencies.get(term) + freq);
+				} else {
+					termFrequencies.put(term, freq);
+				}
+			}
+		}
+		
+		return termFrequencies;
+	}
 	
 	private static RealVector toRealVector(Map<String, Integer> map, Set<String> allTerms) {
         RealVector vector = new ArrayRealVector(allTerms.size());
@@ -149,5 +217,11 @@ public class Utils {
 		);
 		
 		return sortedEntries;
+	}
+	
+	public static void printTopTerms(List<Entry<String, Integer>> topTerms) {
+		for (Entry<String, Integer> term: topTerms) {
+			System.out.println("Term: " + term.getKey() + ". Frequencies: " + term.getValue());
+		}
 	}
 }
