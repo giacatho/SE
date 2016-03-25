@@ -44,6 +44,7 @@ public class A2bSimilarConferencesSearcher {
 			return;
 		}
 		
+		// To verify that get the correct document
 		Document doc = this.searcher.doc(document.doc);
 		System.out.println("Year: " + doc.get("pubyear") + ". Venue: " + doc.get("pubvenue") + ".");
 		
@@ -60,8 +61,10 @@ public class A2bSimilarConferencesSearcher {
 
 		Collections.sort(docSims, Collections.reverseOrder());
 		
-		System.out.println("Result for " + venue + " " + year);
+		System.out.println("Similarity publication venue and year for " + venue + " " + year);
+		System.out.println("--------------------------------------------------");
 		printSearchResult(docSims, 10);
+		System.out.println("\n");
 	}
 	
 	private void printSearchResult(List<DocSimilarity> docSims, int maxResult) throws IOException {

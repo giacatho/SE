@@ -31,19 +31,19 @@ import common.Utils;
  * @author giacatho
  */
 public class A2bSimilarIndexBuilder {
-	private IndexReader _reader;
-	private IndexWriter _writer;
+	private IndexReader reader;
+	private IndexWriter writer;
 	
 	
 	public void buildIndex() throws IOException {
 		initIndexWriter(Constants.INDEX_ASSIGNMENT2B_EXTRA, new StandardAnalyzer());
 
-		_reader = DirectoryReader.open(FSDirectory.open(
+		reader = DirectoryReader.open(FSDirectory.open(
 				Paths.get(Constants.INDEX_ASSIGNMENT2B_DIR)));
 		
 		long startTS = System.currentTimeMillis();
 
-		int numDocs = _reader.maxDoc();
+		int numDocs = reader.maxDoc();
 		System.out.println("Process total documents " + numDocs);
 		for (int i = 0; i < numDocs; i++) {
 			
@@ -52,7 +52,7 @@ public class A2bSimilarIndexBuilder {
 				if (j == i)
 					continue;
 				
-				double cosSim = Utils.getCosineSimilarity(_reader, i, j);
+				double cosSim = Utils.getCosineSimilarity(reader, i, j);
 				
 				docSims.add(new DocSimilarity(j, cosSim));
 			}
@@ -74,29 +74,29 @@ public class A2bSimilarIndexBuilder {
         Directory indexStoreDir = FSDirectory.open(pathIndexStore);
         IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
         iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
-        _writer = new IndexWriter(indexStoreDir, iwc);
+        writer = new IndexWriter(indexStoreDir, iwc);
     }
 	
 	private void addToIndex(int docId, List<DocSimilarity> docSims) throws IOException {
 		Document docToIndex = new Document();
 		
-		Document currDoc = _reader.document(docId);
+		Document currDoc = reader.document(docId);
 		docToIndex.add(new StringField("pubyear", currDoc.get("pubyear"), Field.Store.YES));
 		docToIndex.add(new StringField("pubvenue", currDoc.get("pubvenue"), Field.Store.YES));
 		
 		for (int i = 0; i < 10 && i < docSims.size(); i++) {
 			DocSimilarity docSim = docSims.get(i);
 			
-			Document lSimDoc = _reader.document(docSim.getLuceneDocId());
+			Document lSimDoc = reader.document(docSim.getLuceneDocId());
 			String simDoc = lSimDoc.get("pubvenue") + " " + lSimDoc.get("pubyear") + " - Similarity " + docSim.getCosSim();
 			docToIndex.add(new StringField("simdoc", simDoc, Field.Store.YES));
 		}
 		
-        _writer.addDocument(docToIndex);
+        writer.addDocument(docToIndex);
     }
 	
     private void close() throws IOException {
-        this._writer.close();
+        this.writer.close();
     }
 	
 	public static void main(String[] args) throws IOException {
