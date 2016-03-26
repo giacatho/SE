@@ -12,6 +12,15 @@ public class SearchInput {
     private Operator operator;
     private Field field;
 
+    public SearchInput() {        
+    }
+    
+    public SearchInput(String key, Operator operator, Field field) {
+        this.key = key;
+        this.operator = operator;
+        this.field = field;
+    }
+    
     public String getKey() {
         return key;
     }

@@ -10,13 +10,16 @@ package common;
  * @author giacatho
  */
 public class Constants {
-	private static final String DATA_FOLDER = "/Users/nguyentritin/Documents/Lucene";
-	public static final String DATA_FILE_XML = DATA_FOLDER + "/data_input/dblp.xml";
-	public static final String DATA_FILE_TXT = DATA_FOLDER + "/data_output/dblp.txt";
+	private static final String DATA_FOLDER = "../";
+    public static final String DATA_FILE_XML = DATA_FOLDER + "data_input/dblp.xml";
+    public static final String DATA_FILE_TXT = DATA_FOLDER + "data_output/dblp.txt";
 	
-    public static final String INDEX_FOLDER = DATA_FOLDER + "/data_output/index/";
+    public static final String TAXO_FOLDER = DATA_FOLDER + "data_output/taxo/";        
+    public static final String INDEX_FOLDER = DATA_FOLDER + "data_output/index/";
 	public static final String INDEX_STANDARD_ANALYZER_DIR = INDEX_FOLDER + "store_StandardAnalyzer";
 	public static final String INDEX_ASSIGNMENT2B_DIR = INDEX_FOLDER + "assignment2b";
 	public static final String INDEX_ASSIGNMENT2B_EXTRA = INDEX_FOLDER + "assignment2b_extra";
 	public static final String INDEX_ASSIGNMENT2A_DIR = INDEX_FOLDER + "assignment2a";
+        
+    public static final String POS_TAG_DICTIONARY_FILE = "data/en-pos-maxent.bin";
 }
