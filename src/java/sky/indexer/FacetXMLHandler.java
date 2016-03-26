@@ -29,7 +29,7 @@ public class FacetXMLHandler extends DefaultHandler{
 	@Override
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
         value = "";
-        if (qName.equalsIgnoreCase("inproceedings")){// || qName.equalsIgnoreCase("article")) {
+        if (qName.equalsIgnoreCase("inproceedings") || qName.equalsIgnoreCase("article")) {
             insideDblpItem = true;
             item = new DBLPItem(qName);
             item.setKey(atts.getValue("key"));
@@ -42,7 +42,7 @@ public class FacetXMLHandler extends DefaultHandler{
         if (!insideDblpItem) return;
         count++;
 		
-        if (qName.equalsIgnoreCase("inproceedings")){// || qName.equalsIgnoreCase("article")){
+        if (qName.equalsIgnoreCase("inproceedings") || qName.equalsIgnoreCase("article")){
             try {
                 insideDblpItem = false;
                 //create document
