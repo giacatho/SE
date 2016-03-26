@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
+import opennlp.tools.stemmer.PorterStemmer;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
 
@@ -44,7 +45,7 @@ public class Utils {
         return lstWords;
     }
     
-//    static PorterStemmer stemmer = new PorterStemmer();
+    static PorterStemmer stemmer = new PorterStemmer();
     static POSTaggerME tagger = null;
     static {        
         InputStream modelIn = null;        
@@ -77,7 +78,8 @@ public class Utils {
             
             List<String> results = new ArrayList<String>();
             for (int i=0; i< tags.length; i++) {
-                if (tags[i].startsWith("NN")) results.add(stripEnglishPlural(words[i]));
+                //if (tags[i].startsWith("NN")) results.add(stripEnglishPlural(words[i]));
+                results.add(stemmer.stem(words[i]));
             }
             
             return results;

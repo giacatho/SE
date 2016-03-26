@@ -71,7 +71,7 @@ public class FacetSearcher {
 //        }
         
         int total = 0;
-        FacetResult facet = result.facets.getTopChildren(5000, FieldNaming.Facet.Title);
+        FacetResult facet = result.facets.getTopChildren(10, FieldNaming.Facet.Title);
         System.out.println("Year: " + i);
         for (LabelAndValue item : facet.labelValues) {
             if (item.label.contains(" ")) {
