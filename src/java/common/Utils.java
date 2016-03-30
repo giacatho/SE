@@ -30,6 +30,10 @@ import java.nio.file.Paths;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.LeafReader;
+import org.apache.lucene.index.LeafReaderContext;
+import org.apache.lucene.index.SlowCompositeReaderWrapper;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -223,5 +227,41 @@ public class Utils {
 		for (Entry<String, Integer> term: topTerms) {
 			System.out.println("Term: " + term.getKey() + ". Frequencies: " + term.getValue());
 		}
+	}
+	
+	public static int getSizeOfTerms(IndexReader reader, String fieldName) throws IOException {
+        List<LeafReaderContext> list = reader.leaves();
+
+        int rawTermSize = 0;
+        int sum = 0;
+        HashSet<String> hashset = new HashSet<String>();
+
+        for (LeafReaderContext leaf : list) {
+            LeafReader lr = leaf.reader();
+            TermsEnum itor = lr.terms(fieldName).iterator();
+            BytesRef ref;
+            while ((ref = itor.next()) != null) {
+                Term t = new Term("title", ref);
+                hashset.add(t.text());
+            }
+            rawTermSize += lr.terms(fieldName).size();
+        }
+		
+        return hashset.size();
+    }
+	
+	public static Set<String> getAllTerms(IndexReader reader, String fieldName) throws IOException {
+		Terms terms = SlowCompositeReaderWrapper.wrap(reader).terms(fieldName);
+		
+		Set<String> termSets = new HashSet();
+		
+		TermsEnum termsEnum = terms.iterator();
+        BytesRef text;
+		while ((text = termsEnum.next()) != null) {
+			String term = text.utf8ToString();
+			termSets.add(term);
+		}
+		
+		return termSets;
 	}
 }

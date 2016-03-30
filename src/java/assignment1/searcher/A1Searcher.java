@@ -44,7 +44,7 @@ public class A1Searcher {
 
 	public A1Searcher() throws IOException {
 		IndexReader reader = DirectoryReader.open(FSDirectory.open(
-				Paths.get(Constants.INDEX_STANDARD_ANALYZER_DIR)));
+				Paths.get(Constants.INDEX_ASSIGNMENT1_DIR)));
 		this.searcher = new IndexSearcher(reader);
 	}
 

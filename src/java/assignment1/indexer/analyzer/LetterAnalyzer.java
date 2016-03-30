@@ -8,18 +8,16 @@ package assignment1.indexer.analyzer;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.Tokenizer;
-import org.apache.lucene.analysis.core.LowerCaseTokenizer;
-import org.apache.lucene.analysis.en.PorterStemFilter;
+import org.apache.lucene.analysis.core.LetterTokenizer;
 
 /**
  *
  * @author a
  */
-public class MyAnalyzer_LowerCase extends Analyzer {
+public class LetterAnalyzer extends Analyzer {
     @Override
     protected Analyzer.TokenStreamComponents createComponents(String fieldName){
-        Tokenizer source = new LowerCaseTokenizer();
-        //Analyzer.TokenStreamComponents components = new Analyzer.TokenStreamComponents(source, new PorterStemFilter(source));
+        Tokenizer source = new LetterTokenizer();
         TokenStreamComponents components = new TokenStreamComponents(source);
         return components;
     }

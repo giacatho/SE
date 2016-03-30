@@ -5,7 +5,6 @@
  */
 package assignment1.indexer.analyzer;
 
-import java.io.Reader;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.Analyzer.TokenStreamComponents;
 import org.apache.lucene.analysis.Tokenizer;
@@ -16,12 +15,11 @@ import org.apache.lucene.analysis.en.PorterStemFilter;
  *
  * @author a
  */
-public class MyAnalyzer_PorterStem extends Analyzer {
+public class PorterStemAnalyzer extends Analyzer {
     @Override
     protected TokenStreamComponents createComponents(String fieldName){
         Tokenizer source = new LowerCaseTokenizer();
         TokenStreamComponents components = new TokenStreamComponents(source, new PorterStemFilter(source));
-        //TokenStreamComponents components = new TokenStreamComponents(source);
         return components;
     }
 }

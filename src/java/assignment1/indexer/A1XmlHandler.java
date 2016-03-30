@@ -6,24 +6,31 @@
 package assignment1.indexer;
 
 import assignment1.indexer.model.A1DBLPItem;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+import common.Constants;
+import common.Utils;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.nio.file.Paths;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.store.FSDirectory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-import common.Constants;
 
 /**
  *
  * @author a
  */
 public class A1XmlHandler extends DefaultHandler {
+	A1IndexBuilder a1IndexBuider;
+	
+	private long startTS;
+	private long endTS;
+	
+	private int noInproceedings = 0;
+	private int noArticles = 0;
 
-    private Boolean insideDblpItem = false; //inside inproceedings or article
-    private BufferedWriter bw;
+	private Boolean insideDblpItem = false; //inside inproceedings or article
     private A1DBLPItem item;
 	private String value;
     
@@ -32,9 +39,8 @@ public class A1XmlHandler extends DefaultHandler {
 		value = "";
         if (qName.equalsIgnoreCase("inproceedings") || qName.equalsIgnoreCase("article")) {
             insideDblpItem = true;
-            item = new A1DBLPItem(qName);
+            item = new A1DBLPItem();
             item.setKey(atts.getValue("key"));
-            //System.out.println("key: " + atts.getValue("key"));
         }
     }
 
@@ -42,33 +48,47 @@ public class A1XmlHandler extends DefaultHandler {
     public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
 		if (!insideDblpItem) return;
 		
-        if (qName.equalsIgnoreCase("inproceedings") || qName.equalsIgnoreCase("article")){
-			try {
-				insideDblpItem = false;
-				bw.write(item.toString()); //saved as a log file
-				
-				// an option is to plugin the index thing here   
-				// Tin: agree, we can create a Lucene document and add to index here
-				// Another way is to call IndexBuilder process at the endDocument()
-			} catch (IOException ex) {
-				Logger.getLogger(A1XmlHandler.class.getName()).log(Level.SEVERE, null, ex);
+		if (qName.equalsIgnoreCase("inproceedings") || qName.equalsIgnoreCase("article")) {
+			insideDblpItem = false;
+			if (item.getPubyear() == null || item.getPubvenue() == null || item.getTitle() == null) {
+				// Just ignore it
+				System.out.print("-");
+				return;
 			}
-        }
-            
-		else if (qName.equalsIgnoreCase("author")) {
-			item.addAuthor(value);
-		}
 
-		else if (qName.equalsIgnoreCase("title")) {
-			item.setTitle(value);
+			if (qName.equalsIgnoreCase("inproceedings"))
+				noInproceedings++;
+			else if (qName.equalsIgnoreCase("article"))
+				noArticles++;
+			else
+				throw new RuntimeException("Impossible state");
+
+			if ((noInproceedings + noArticles) % 10000 == 0) {
+				System.out.print(".");
+			}
+
+			try {
+				this.a1IndexBuider.addToIndex(item.getKey(), item.getPubyear(), item.getPubvenue(), 
+						item.getTitle(), item.getAuthors());
+			} catch (IOException ex) {
+				throw new RuntimeException(ex.toString());
+			}
 		}
 		
 		else if (qName.equalsIgnoreCase("year")) {
-			item.setPubyear(value);
+			item.setPubyear(value.trim());
 		}
 		
 		else if (qName.equalsIgnoreCase("booktitle") || qName.equalsIgnoreCase("journal") ){
-			item.setPubvenue(value);
+			item.setPubvenue(value.trim());
+		}
+            
+		else if (qName.equalsIgnoreCase("title")) {
+			item.setTitle(value.trim());
+		}
+		
+		else if (qName.equalsIgnoreCase("author")) {
+			item.addAuthor(value.trim());
 		}
     }
     
@@ -82,18 +102,39 @@ public class A1XmlHandler extends DefaultHandler {
     
 	@Override
     public void startDocument(){
-        try {
-            bw = new BufferedWriter(new FileWriter(Constants.DATA_FILE_TXT));
-        } catch (IOException ex) {
-            Logger.getLogger(A1XmlHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        System.out.println("Start to parse and index dblp.xml");
+		this.startTS = System.currentTimeMillis();
+		
+		System.out.println("Start: " + this.startTS);
+		
+		try {
+			this.a1IndexBuider = new A1IndexBuilder();
+		} catch (IOException ex) {
+			throw new RuntimeException(ex.toString());
+		}
     }
 	@Override
     public void endDocument() {
-        try {
-            bw.close();
-        } catch (IOException ex) {
-            Logger.getLogger(A1XmlHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
+		this.endTS = System.currentTimeMillis();
+		
+        System.out.println("Parsing and indexing has been completed.");
+		System.out.println(String.format("Total %d inproceedings and %d articles.", 
+				noInproceedings, noArticles));
+		
+		System.out.println("Start time: " + this.endTS);
+		System.out.println("End time: " + this.endTS);
+		System.out.println("It takes " + (this.endTS - this.startTS)/1000 + " seconds.");
+				
+		try {
+			this.a1IndexBuider.close();
+			
+			IndexReader reader = DirectoryReader.open(FSDirectory.open(
+				Paths.get(Constants.INDEX_ASSIGNMENT1_DIR)));
+			System.out.println("Total terms in title: " + Utils.getSizeOfTerms(reader, "title"));
+			reader.close();
+			
+		} catch (IOException ex) {
+			throw new RuntimeException(ex.toString());
+		}
     }
 }
