@@ -44,10 +44,12 @@ public class A2bIndexBuilder {
     }
 
 
-    private void addToIndex(String year, String venue, List<String> titles) throws IOException {
+    private void addToIndex(String year, String venue, List<String> titles)
+			throws IOException {
 		Document doc = new Document();
         
-		// In this assignment, term vector needs to be stored but the title itself does not
+		// In this assignment, term vector needs to be stored but the title
+		// itself does not
 		FieldType myFieldType = new FieldType(TextField.TYPE_NOT_STORED);
 		myFieldType.setStoreTermVectors(true);
 		

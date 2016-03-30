@@ -31,10 +31,14 @@ import assignment1.searcher.model.SearchResult;
 import assignment1.searcher.model.SearchInput;
 import assignment1.searcher.model.SearchResultItem;
 import common.Utils;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.PhraseQuery;
 
 public class A1Searcher {
 
-	static String[] AllFields = new String[]{"title", "author"};
+	static String[] AllFields = new String[]{"title", "author", "pubyear", "pubvenue"};
 
 	IndexSearcher searcher = null;
 
@@ -62,17 +66,56 @@ public class A1Searcher {
 	}
 
 	Query parse(SearchInput input) throws ParseException {
-		QueryParser parser;
-
+		String indexField;
 		Field field = input.getField();
 		if (field == null) {
-			parser = new MultiFieldQueryParser(AllFields, getAnalyzer());
+			indexField = "all";
 		} else {
-			parser = new QueryParser(field.toString().toLowerCase(), getAnalyzer());
+			indexField = field.toString().toLowerCase();
 		}
-
-		return parser.parse(input.getKey());
+			
+		String query = input.getKey().trim();
+		
+		List<String> phrases = this.getPhrases(query);
+		
+		BooleanQuery.Builder booleanBuilder = new BooleanQuery.Builder();
+		
+		PhraseQuery.Builder phraseBuilder; 
+		for (String phrase: phrases) {
+			phraseBuilder = new PhraseQuery.Builder();
+			String[] words = phrase.split("\\s+");
+			for (String word:words) {
+				phraseBuilder.add(new Term(indexField, word));
+			}
+			
+			booleanBuilder.add(phraseBuilder.build(), BooleanClause.Occur.MUST);
+		}
+		
+		http://stackoverflow.com/questions/24784707/removing-all-the-characters-between-two-specific-tags-java-regex
+		query = query.replaceAll("\"([^\"]*)\"", "").trim();
+		
+		System.out.println("After phrase " + query);
+		
+		if (!query.isEmpty()) {
+			QueryParser queryParser = new QueryParser(indexField, getAnalyzer());
+			booleanBuilder.add(queryParser.parse(query), BooleanClause.Occur.MUST);
+		}
+		
+		return booleanBuilder.build();
 	}
+	
+//	Query parse(SearchInput input) throws ParseException {
+//		QueryParser parser;
+//
+//		Field field = input.getField();
+//		if (field == null) {
+//			parser = new MultiFieldQueryParser(AllFields, getAnalyzer());
+//		} else {
+//			parser = new QueryParser(field.toString().toLowerCase(), getAnalyzer());
+//		}
+//
+//		return parser.parse(input.getKey());
+//	}
 
 	Query parse(List<SearchInput> inputs) throws ParseException {
 		if (inputs.size() == 1) {
@@ -120,5 +163,54 @@ public class A1Searcher {
 		}
 		
 		return new SearchResult(endTime - startTime, hits.totalHits, resultItems);
+	}
+	
+//	public void searchAll(String query) throws Exception {
+//		System.out.println(query);
+//		
+//		List<String> phrases = this.getPhrases(query);
+//		
+//		BooleanQuery.Builder booleanBuilder = new BooleanQuery.Builder();
+//		
+//		PhraseQuery.Builder phraseBuilder; 
+//		for (String phrase: phrases) {
+//			phraseBuilder = new PhraseQuery.Builder();
+//			String[] words = phrase.split("\\s+");
+//			for(String word:words){
+//				phraseBuilder.add(new Term("all", word));
+//			}
+//			
+//			booleanBuilder.add(phraseBuilder.build(), BooleanClause.Occur.MUST);
+//		}
+//		
+//		http://stackoverflow.com/questions/24784707/removing-all-the-characters-between-two-specific-tags-java-regex
+//		query = query.replaceAll("\"([^\"]*)\"", "");
+//		
+//		QueryParser queryParser = new QueryParser("all", getAnalyzer());
+//		booleanBuilder.add(queryParser.parse(query), BooleanClause.Occur.MUST);
+//		
+//		// After replace
+//		System.out.println("After " + query);
+//	}
+	
+	//http://stackoverflow.com/questions/1473155/how-to-get-data-between-quotes-in-java
+	public List<String> getPhrases(String query) {
+		System.out.println(query);
+		List<String> phrases = new ArrayList(); 
+		Pattern p = Pattern.compile("\"([^\"]*)\"");
+		Matcher m = p.matcher(query);
+		while (m.find()) {
+			phrases.add(m.group(1).trim().toLowerCase());
+			System.out.println(m.group(1));
+		}
+		
+		return phrases;
+	}
+	
+	public static void main(String[] args) throws Exception {
+		A1Searcher searcher = new A1Searcher();
+		
+		//searcher.searchAll("ib \"How are you\" I get \"two phrases\" that");
+		
 	}
 }

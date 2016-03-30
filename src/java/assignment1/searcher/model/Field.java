@@ -14,5 +14,11 @@ public enum Field {
     Title,
     
     @SerializedName("1")
-    Author
+    Author,
+	
+	@SerializedName("2")
+	Pubvenue,
+	
+	@SerializedName("3")
+	Pubyear
 }

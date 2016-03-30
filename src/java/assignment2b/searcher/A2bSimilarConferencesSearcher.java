@@ -101,15 +101,23 @@ public class A2bSimilarConferencesSearcher {
 		this.reader.close();
 	}
 	
+	public void printSize() throws IOException {
+		System.out.println(this.reader.maxDoc());
+	}
+	
 	public static void main(String[] args) throws IOException, ParseException {
 		A2bSimilarConferencesSearcher searcher = new A2bSimilarConferencesSearcher();
 		
-		searcher.searchSimilarity("2015", "KDD");
-		searcher.searchSimilarity("2014", "SIGIR");
-		searcher.searchSimilarity("2013", "CIKM");
-		searcher.searchSimilarity("2012", "WSDM");
-		searcher.searchSimilarity("2011", "INFOCOM");
-		searcher.searchSimilarity("2010", "CVPR");
+//		searcher.searchSimilarity("2015", "KDD");
+//		searcher.searchSimilarity("2014", "SIGIR");
+//		searcher.searchSimilarity("2013", "CIKM");
+//		searcher.searchSimilarity("2012", "WSDM");
+//		searcher.searchSimilarity("2011", "INFOCOM");
+//		searcher.searchSimilarity("2010", "CVPR");
+		
+		System.out.println("What");
+		
+		searcher.printSize();
 		
 		searcher.close();
 	}

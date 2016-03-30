@@ -104,25 +104,5 @@ public class A1DBLPItem {
         s += "\n";
         return s; //To change body of generated methods, choose Tools | Templates.
     }
-    //TODO: study the difference between different Fields
-    public Document getLuceneDocument(){
-        Document doc = new Document();
-        
-		// Tin: Title and author needs term vector to support phrase query
-		FieldType myFieldType = new FieldType(TextField.TYPE_STORED);
-		myFieldType.setStoreTermVectors(true);
-		
-        doc.add(new Field("title", this.getTitle(), myFieldType));
-		for(String author : this.authors){
-			// Tin: author needs term vector to support phrase query
-			doc.add(new Field("author", author, myFieldType));
-        } 
-		
-        //TODO: use data field, if necessary
-        doc.add(new StringField("key",this.getKey(),Field.Store.YES));
-		doc.add(new StringField("pubyear",this.getPubyear(),Field.Store.YES));
-        doc.add(new TextField("pubvenue",this.getPubvenue(),Field.Store.YES));
-        
-        return doc;
-    }
+    
 }

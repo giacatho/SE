@@ -39,6 +39,11 @@ import org.apache.lucene.index.TermsEnum;
 import org.apache.lucene.util.BytesRef;
 import common.Constants;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.FieldType;
+import org.apache.lucene.document.StringField;
+import org.apache.lucene.document.TextField;
 
 /**
  * Input: text file containing DBLP items Output: a Lucene index and index
@@ -53,7 +58,7 @@ public class A1IndexBuilder {
     //private Path pathIndexStore;
     //private Directory indexStoreDir;
     //private  Analyzer analyzer;
-    private IndexWriter _writer;
+    private IndexWriter writer;
 
     public A1IndexBuilder() {
 
@@ -71,7 +76,7 @@ public class A1IndexBuilder {
     }
 
     public IndexWriter getWriter() {
-        return _writer;
+        return writer;
     }
 
     //TODO: parameterize this function , so that it can be used to generate different kind of index
@@ -81,7 +86,7 @@ public class A1IndexBuilder {
         Directory indexStoreDir = FSDirectory.open(pathIndexStore);
         IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
         iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
-        _writer = new IndexWriter(indexStoreDir, iwc);
+        writer = new IndexWriter(indexStoreDir, iwc);
     }
 
     private String getValue(String line) {
@@ -119,6 +124,7 @@ public class A1IndexBuilder {
                     item.addAuthor(getValue(line));
                 }
             }
+			
             //blank line indicate end of an DBLP item
             if (line.length() == 0) {
                 break;
@@ -128,22 +134,40 @@ public class A1IndexBuilder {
     }
 
     public void addItemToIndex(A1DBLPItem item) throws IOException {
-        //System.out.println("addItemToIndex ");
-        _writer.addDocument(item.getLuceneDocument());
+		Document doc = new Document();
+        
+		doc.add(new TextField("title", item.getTitle(), Field.Store.YES));
+		doc.add(new TextField("all", item.getTitle(), Field.Store.NO));
+		
+		for(String author : item.getAuthors()){
+			doc.add(new TextField("author", author, Field.Store.YES));
+			doc.add(new TextField("all", author, Field.Store.NO));
+        } 
+		
+        doc.add(new StringField("key", item.getKey(), Field.Store.YES));
+		doc.add(new TextField("all", item.getKey(), Field.Store.NO));
+		
+		doc.add(new StringField("pubyear", item.getPubyear(), Field.Store.YES));
+		doc.add(new TextField("all", item.getPubyear(), Field.Store.NO));
+		
+        doc.add(new TextField("pubvenue", item.getPubvenue(), Field.Store.YES));
+		doc.add(new TextField("all", item.getPubvenue(), Field.Store.NO));
+        
+		writer.addDocument(doc);
     }
 
     /**
      * @deprecated
      */
     public void printIndexStat() {
-        System.out.println("maxDoc: " + _writer.maxDoc());
-        System.out.println("Analyzer: " + _writer.getAnalyzer());
+        System.out.println("maxDoc: " + writer.maxDoc());
+        System.out.println("Analyzer: " + writer.getAnalyzer());
     }
 
     public void close() throws IOException {
         this.stream.close();
         this.bufReader.close();
-        this._writer.close();
+        this.writer.close();
     }
 
     public int getSizeOfTerms(IndexReader reader, String fieldName) throws IOException {
@@ -171,7 +195,7 @@ public class A1IndexBuilder {
     }
 
     public static void main(String[] args) throws IOException {
-        System.out.println("DblpIndexBuilder: here we go!!!");
+        System.out.println("DblpIndexBuilder: here we go!");
         eval_different_indexing();
         //testDrive();
     }
