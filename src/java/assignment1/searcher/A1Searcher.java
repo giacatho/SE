@@ -64,8 +64,33 @@ public class A1Searcher {
 
 		return null;
 	}
+	
+//	http://stackoverflow.com/questions/24784707/removing-all-the-characters-between-two-specific-tags-java-regex
+	private Query parse(String query, String field) throws ParseException {
+		BooleanQuery.Builder booleanBuilder = new BooleanQuery.Builder();
+		PhraseQuery.Builder phraseBuilder; 
+		
+		List<String> phrases = this.getPhrases(query);
+		for (String phrase: phrases) {
+			phraseBuilder = new PhraseQuery.Builder();
+			String[] words = phrase.split("\\s+");
+			for (String word:words) {
+				phraseBuilder.add(new Term(field, word));
+			}
+			
+			booleanBuilder.add(phraseBuilder.build(), BooleanClause.Occur.MUST);
+		}
+		
+		query = query.replaceAll("\"([^\"]*)\"", "").trim();
+		if (!query.isEmpty()) {
+			QueryParser queryParser = new QueryParser(field, getAnalyzer());
+			booleanBuilder.add(queryParser.parse(query), BooleanClause.Occur.MUST);
+		}
+		
+		return booleanBuilder.build();
+	}
 
-	Query parse(SearchInput input) throws ParseException {
+	private Query parse(SearchInput input) throws ParseException {
 		String indexField;
 		Field field = input.getField();
 		if (field == null) {
@@ -76,48 +101,10 @@ public class A1Searcher {
 			
 		String query = input.getKey().trim();
 		
-		List<String> phrases = this.getPhrases(query);
-		
-		BooleanQuery.Builder booleanBuilder = new BooleanQuery.Builder();
-		
-		PhraseQuery.Builder phraseBuilder; 
-		for (String phrase: phrases) {
-			phraseBuilder = new PhraseQuery.Builder();
-			String[] words = phrase.split("\\s+");
-			for (String word:words) {
-				phraseBuilder.add(new Term(indexField, word));
-			}
-			
-			booleanBuilder.add(phraseBuilder.build(), BooleanClause.Occur.MUST);
-		}
-		
-		http://stackoverflow.com/questions/24784707/removing-all-the-characters-between-two-specific-tags-java-regex
-		query = query.replaceAll("\"([^\"]*)\"", "").trim();
-		
-		System.out.println("After phrase " + query);
-		
-		if (!query.isEmpty()) {
-			QueryParser queryParser = new QueryParser(indexField, getAnalyzer());
-			booleanBuilder.add(queryParser.parse(query), BooleanClause.Occur.MUST);
-		}
-		
-		return booleanBuilder.build();
+		return this.parse(query, indexField);
 	}
 	
-//	Query parse(SearchInput input) throws ParseException {
-//		QueryParser parser;
-//
-//		Field field = input.getField();
-//		if (field == null) {
-//			parser = new MultiFieldQueryParser(AllFields, getAnalyzer());
-//		} else {
-//			parser = new QueryParser(field.toString().toLowerCase(), getAnalyzer());
-//		}
-//
-//		return parser.parse(input.getKey());
-//	}
-
-	Query parse(List<SearchInput> inputs) throws ParseException {
+	public Query parse(List<SearchInput> inputs) throws ParseException {
 		if (inputs.size() == 1) {
 			return parse(inputs.get(0));
 		}
@@ -125,7 +112,7 @@ public class A1Searcher {
 		BooleanQuery.Builder query = new BooleanQuery.Builder();
 		
 		for (SearchInput input : inputs) {
-			query.add(parse(input), getOccur(input));
+			query.add(this.parse(input), getOccur(input));
 		}
 
 		return query.build();
@@ -165,43 +152,13 @@ public class A1Searcher {
 		return new SearchResult(endTime - startTime, hits.totalHits, resultItems);
 	}
 	
-//	public void searchAll(String query) throws Exception {
-//		System.out.println(query);
-//		
-//		List<String> phrases = this.getPhrases(query);
-//		
-//		BooleanQuery.Builder booleanBuilder = new BooleanQuery.Builder();
-//		
-//		PhraseQuery.Builder phraseBuilder; 
-//		for (String phrase: phrases) {
-//			phraseBuilder = new PhraseQuery.Builder();
-//			String[] words = phrase.split("\\s+");
-//			for(String word:words){
-//				phraseBuilder.add(new Term("all", word));
-//			}
-//			
-//			booleanBuilder.add(phraseBuilder.build(), BooleanClause.Occur.MUST);
-//		}
-//		
-//		http://stackoverflow.com/questions/24784707/removing-all-the-characters-between-two-specific-tags-java-regex
-//		query = query.replaceAll("\"([^\"]*)\"", "");
-//		
-//		QueryParser queryParser = new QueryParser("all", getAnalyzer());
-//		booleanBuilder.add(queryParser.parse(query), BooleanClause.Occur.MUST);
-//		
-//		// After replace
-//		System.out.println("After " + query);
-//	}
-	
 	//http://stackoverflow.com/questions/1473155/how-to-get-data-between-quotes-in-java
-	public List<String> getPhrases(String query) {
-		System.out.println(query);
+	private List<String> getPhrases(String query) {
 		List<String> phrases = new ArrayList(); 
 		Pattern p = Pattern.compile("\"([^\"]*)\"");
 		Matcher m = p.matcher(query);
 		while (m.find()) {
 			phrases.add(m.group(1).trim().toLowerCase());
-			System.out.println(m.group(1));
 		}
 		
 		return phrases;

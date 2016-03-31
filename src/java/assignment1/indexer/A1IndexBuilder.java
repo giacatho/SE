@@ -12,15 +12,16 @@
  */
 package assignment1.indexer;
 
-import assignment1.indexer.analyzer.LetterAnalyzer;
 import java.io.IOException;
 import java.util.List;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 import common.Constants;
 import common.Utils;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 
 /**
@@ -34,13 +35,13 @@ public class A1IndexBuilder {
 
     public A1IndexBuilder() throws IOException {
 		Analyzer analyzer;
-//		analyzer = new StandardAnalyzer();
+		analyzer = new StandardAnalyzer();
 //		analyzer = new SimpleAnalyzer();
 //		analyzer = new WhitespaceAnalyzer();
 //		analyzer = new StopAnalyzer();
 //		analyzer = new PorterStemAnalyzer();
 //		analyzer = new LowerCaseAnalyzer();
-		analyzer = new LetterAnalyzer();
+//		analyzer = new LetterAnalyzer();
 		
 		this.writer = Utils.initIndexWriter(Constants.INDEX_ASSIGNMENT1_DIR, analyzer);
     }
@@ -51,7 +52,7 @@ public class A1IndexBuilder {
 		doc.add(new TextField("key", key, Field.Store.YES));
 		doc.add(new TextField("all", key, Field.Store.NO));
 		
-		doc.add(new TextField("pubyear", year, Field.Store.YES));
+		doc.add(new StringField("pubyear", year, Field.Store.YES));
 		doc.add(new TextField("all", year, Field.Store.NO));
 		
         doc.add(new TextField("pubvenue", venue, Field.Store.YES));

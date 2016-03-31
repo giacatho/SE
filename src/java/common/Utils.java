@@ -146,21 +146,30 @@ public class Utils {
     }
 	
 	public static List<Entry<String, Integer>> getTopTermFrequencies(IndexReader reader,
-			ScoreDoc[] scoreDocs, boolean mustBeBiword) throws IOException {
-		Map<String, Integer> termFrequencies = Utils.getAllTermFrequencies(reader, scoreDocs, mustBeBiword);
+			ScoreDoc[] scoreDocs, int nGram) throws IOException {
+		Map<String, Integer> termFrequencies = Utils.getAllTermFrequencies(reader, scoreDocs, nGram);
 		
 		List<Entry<String, Integer>> sortedTermFrequencies = Utils.getEntriesSortedByValues(termFrequencies);
 		
 		List<Entry<String, Integer>> topTerms = new ArrayList();
-		for (int i=0; i < 10 && i < sortedTermFrequencies.size(); i++) {
-			topTerms.add(sortedTermFrequencies.get(i));
+		int start = 0;
+		int end = 10;
+		if (nGram == 1) {
+			start = (int) Math.floor(sortedTermFrequencies.size() * 0.001);
+			end = start + 10;
+		}
+		
+		System.out.println("Start " + start + "and end " + end);
+		
+		for (; start < end && start < sortedTermFrequencies.size(); start++) {
+			topTerms.add(sortedTermFrequencies.get(start));
 		}
 		
 		return topTerms;
 	}
 	
 	private static Map<String, Integer> getAllTermFrequencies(IndexReader reader, 
-			ScoreDoc[] scoreDocs, boolean mustBeBiword) throws IOException {
+			ScoreDoc[] scoreDocs, int nGram) throws IOException {
 		Map<String, Integer> termFrequencies = new HashMap();
 		
 		for (ScoreDoc scoreDoc: scoreDocs) {
@@ -178,11 +187,7 @@ public class Utils {
 				String term = text.utf8ToString();
 				int freq = (int) termsEnum.totalTermFreq();
 
-				if (term.contains("_")) {
-					continue;
-				}
-
-				if (mustBeBiword && term.split(" ").length !=2) {
+				if (term.contains("_") || (term.split(" ").length != nGram)) {
 					continue;
 				}
 

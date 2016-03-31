@@ -105,7 +105,7 @@ public class A1XmlHandler extends DefaultHandler {
         System.out.println("Start to parse and index dblp.xml");
 		this.startTS = System.currentTimeMillis();
 		
-		System.out.println("Start: " + this.startTS);
+		System.out.println("Start time: " + this.startTS);
 		
 		try {
 			this.a1IndexBuider = new A1IndexBuilder();
@@ -121,7 +121,6 @@ public class A1XmlHandler extends DefaultHandler {
 		System.out.println(String.format("Total %d inproceedings and %d articles.", 
 				noInproceedings, noArticles));
 		
-		System.out.println("Start time: " + this.endTS);
 		System.out.println("End time: " + this.endTS);
 		System.out.println("It takes " + (this.endTS - this.startTS)/1000 + " seconds.");
 				

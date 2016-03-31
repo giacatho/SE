@@ -8,6 +8,6 @@
 <footer class="main-footer">
 	&nbsp;
 	<div class="pull-right">
-        <strong>Copyright &copy; 2016 Team 5 CI6226.</strong> All rights reserved.
+        <strong>Copyright &copy; 2016 Team 6 CI6226.</strong> All rights reserved.
     </div>
 </footer>

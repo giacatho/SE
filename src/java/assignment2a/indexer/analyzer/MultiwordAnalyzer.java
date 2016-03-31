@@ -22,7 +22,7 @@ import org.apache.lucene.analysis.standard.StandardTokenizer;
  * @author nguyentritin
  */
 // Reference https://fossies.org/linux/www/lucene-5.5.0-src.tgz/lucene-5.5.0/analysis/common/src/java/org/apache/lucene/analysis/en/EnglishAnalyzer.java
-public class BiwordEnglishAnalyzer extends Analyzer {
+public class MultiwordAnalyzer extends Analyzer {
 
 	@Override
 	protected TokenStreamComponents createComponents(String fieldName) {
@@ -33,9 +33,8 @@ public class BiwordEnglishAnalyzer extends Analyzer {
 		result = new LowerCaseFilter(result);
 		result = new StopFilter(result, StopAnalyzer.ENGLISH_STOP_WORDS_SET);
 		result = new PorterStemFilter(result);
-		result = new ShingleFilter(result);
+		result = new ShingleFilter(result, 3);
 		
 		return new TokenStreamComponents(source, result);
 	}
-	
 }

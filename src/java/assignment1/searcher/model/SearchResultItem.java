@@ -64,9 +64,17 @@ public class SearchResultItem {
 	public String getDocPubYear() {
 		return docPubYear;
 	}
+	
+	public String getDocPubYearBeauty() {
+		return this.highlight(this.docPubYear);
+	}
 
 	public String getDocPubVenue() {
 		return docPubVenue;
+	}
+	
+	public String getDocPubVenueBeauty() {
+		return this.highlight(this.docPubVenue);
 	}
 	
 	/**
@@ -78,7 +86,8 @@ public class SearchResultItem {
 		String retStr = str;
 		
 		for (String keyword : keywords) {
-			retStr = retStr.replaceAll("(?i)(" + keyword + ")", "<em>$1</em>");
+			retStr = retStr.replaceAll("(?i)(" + keyword + 
+					")", "<em>$1</em>");
 		}
 		
 		return retStr;

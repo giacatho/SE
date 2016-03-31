@@ -19,8 +19,8 @@
 				<div class="author">${fn:length(resultItem.docAuthors)} Author(s): ${resultItem.docAuthorsBeauty}</div>
 				</c:if>
 				<div class="key">DocID: ${resultItem.docKey}</div>
-				<div class="pubyear">Public Year: ${resultItem.docPubYear}</div>
-				<div class="pubvenue">Public Venue: ${resultItem.docPubVenue}</div>
+				<div class="pubyear">Publication Year: ${resultItem.docPubYearBeauty}</div>
+				<div class="pubvenue">Publication Venue: ${resultItem.docPubVenueBeauty}</div>
 				<div class="score">Score: ${resultItem.searchScore}</div>
 			</div>
         </c:forEach>

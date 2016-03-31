@@ -1,7 +1,7 @@
 package assignment2a.indexer;
 
 
-import assignment2a.indexer.analyzer.BiwordEnglishAnalyzer;
+import assignment2a.indexer.analyzer.MultiwordAnalyzer;
 import java.io.IOException;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -17,7 +17,7 @@ public class A2aIndexBuilder {
     private final IndexWriter writer;
 
 	public A2aIndexBuilder () throws IOException {
-		this.writer = Utils.initIndexWriter(Constants.INDEX_ASSIGNMENT2A_DIR, new BiwordEnglishAnalyzer());
+		this.writer = Utils.initIndexWriter(Constants.INDEX_ASSIGNMENT2A_DIR, new MultiwordAnalyzer());
 	}
 
     public void addToIndex(String year, String venue, String title, List<String> authors) throws IOException {
