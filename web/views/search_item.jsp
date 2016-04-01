@@ -7,12 +7,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        
-    });    
-</script>
-
 <div class="search-item">
     <div class="input-group">
         <div class="input-group-btn">         

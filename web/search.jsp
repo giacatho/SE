@@ -7,8 +7,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
-<script type="text/javascript">
-    
+<script type="text/javascript">    
     $(document).ready(function(){    
         //call to get search item
         var itemTemplate = null;
@@ -45,9 +44,9 @@
                 type: "POST",
                 url: "Search",
                 data: { 
-					max_result: $("#max-result option:selected").val(),
-					input: JSON.stringify(queries) 
-				},
+                    max_result: $("#max-result option:selected").val(),
+                    input: JSON.stringify(queries) 
+                },
                 datatype: "application/json",
                 success: function (response) {
                     $('#divResult').html(response);
@@ -64,26 +63,26 @@
             <div class="search-outline">
                 <div class="row">
                     <div class="col col-sm-7">
-						<div class="row">
-							<div class="col-sm-12">
-								<div class="search-zone"></div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-12">
-								<a href="#" class="btn-add-item pull-right">Add more condition</a>
-							</div>
-						</div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="search-zone"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <a href="#" class="btn-add-item pull-right" style="margin-top: 12px; margin-right: 38px">Add more condition</a>
+                            </div>
+                        </div>
                     </div>
-					<div class="col col-sm-5">
-						<span>Display</span>
-						<select id="max-result" class="btn btn-default select-operator">
-							<option value="10">10</option>
-							<option value="25">25</option>
-							<option value="50">50</option>
-							<option value="100">100</option>
-						</select>
-						<span style="padding-right: 5px;">results</span>&nbsp;
+                    <div class="col col-sm-5">
+                        <span>Display</span>
+                        <select id="max-result" class="btn btn-default select-operator">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                        </select>
+                        <span style="padding-right: 5px;">results</span>&nbsp;
                         <button type="button" class="btn btn-primary btn-search">Search</button> 
                         <button type="button" class="btn btn-primary btn-clear">Clear</button>
                     </div>
