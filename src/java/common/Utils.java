@@ -27,6 +27,7 @@ import org.apache.lucene.util.BytesRef;
 import assignment1.searcher.model.SearchInput;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.NoSuchElementException;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -201,6 +202,43 @@ public class Utils {
 		
 		return termFrequencies;
 	}
+        
+        public static Map<String, Integer> getTermFrequencies(String[] document) throws IOException {
+        
+	//List<String> sentences = document.split(".");        
+		
+        Map<String, Integer> frequencies = new HashMap();
+        BytesRef text;
+        
+        int count = 0;
+        
+        System.out.println("Total title: " + document.length);
+        //for (String content : sentences) {
+        for (String content : document) {
+            count++;
+            
+            if (count % 10000 == 0) {
+                System.out.print(".");
+            }
+            
+            //if (count > 10000) break;
+            
+            try {
+                List<String> terms = LanguageUtils.getNounPhrases(content);
+            
+                for (String term : terms) {
+                    if (!frequencies.containsKey(term)) frequencies.put(term, 0);
+                    Integer frequency = frequencies.get(term);
+                    frequency++;
+                    frequencies.put(term, frequency);
+                }
+            } catch (NoSuchElementException ex) {
+                System.out.println(ex.toString());
+            }
+        }
+		
+        return frequencies;
+    }
 	
 	private static RealVector toRealVector(Map<String, Integer> map, Set<String> allTerms) {
         RealVector vector = new ArrayRealVector(allTerms.size());

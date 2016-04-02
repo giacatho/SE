@@ -12,6 +12,15 @@
         <title>DBLP Search</title>                      
 
         <%@include file="template/head.jsp" %> 
+        <script type="text/javascript">
+            $(document).ready(function() {
+                //init standford
+                $.ajax({
+                    type: "POST",
+                    url: "InitStanford"            
+                });
+            })
+        </script>
     </head>
 
     <body class="skin-blue layout-top-nav" style="font-size: 16px;">

@@ -5,29 +5,21 @@
  */
 package assignment1.searcher.gui;
 
-import assignment1.searcher.model.SearchInput;
-import assignment1.searcher.model.SearchResult;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import common.LanguageUtils;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.lucene.queryparser.classic.ParseException;
-import assignment1.searcher.A1Searcher;
 
 /**
  *
- * @author Quoc
+ * @author cnaquoc
  */
-@WebServlet(name = "SearchServlet", urlPatterns = {"/Search"})
-public class SearchServlet extends HttpServlet {
+@WebServlet(name = "InitStanfordServlet", urlPatterns = {"/InitStanford"})
+public class InitStanfordServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,16 +33,10 @@ public class SearchServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-                   
-        GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.create(); 
-		
-        int maxResult = Integer.parseInt(request.getParameter("max_result"));
-        SearchInput[] lstTemp = gson.fromJson(request.getParameter("input"), SearchInput[].class);
-        List<SearchInput> searchInput = Arrays.asList(lstTemp);
-		
-	request.setAttribute("result", this.search(searchInput, maxResult));
-        request.getRequestDispatcher("/views/search_result.jsp").forward(request, response);
+        
+        LanguageUtils.getNounPhrasesForWeb("It is a good day to die");
+        
+        response.getWriter().print(true);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -92,17 +78,4 @@ public class SearchServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-	
-	public SearchResult search (List<SearchInput> inputs, int maxResult){
-        try {
-            A1Searcher machine = new A1Searcher();            
-            return machine.search(inputs, maxResult);
-        } catch (IOException ex) {
-            Logger.getLogger(SearchServlet.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParseException ex) {
-            Logger.getLogger(SearchServlet.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return null;
-    }
 }

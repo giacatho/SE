@@ -9,6 +9,7 @@ import java.util.List;
 public class SearchResultItem {
 	private final List<String> keywords;
 	
+        private final int id;
 	private final float searchScore;
 	private final String docKey;
 	private final String docTitle;
@@ -16,10 +17,11 @@ public class SearchResultItem {
 	private final String docPubYear;
 	private final String docPubVenue;
 
-	public SearchResultItem(List<String> keywords,
+	public SearchResultItem(int id, List<String> keywords,
 			float searchScore, String docKey, String docTitle, 
 			List<String> docAuthors, String docPubYear, String docPubVenue) {
-		this.keywords = keywords;
+		this.id = id;
+                this.keywords = keywords;
 		
 		this.searchScore = searchScore;
 		this.docKey = docKey;
@@ -28,6 +30,10 @@ public class SearchResultItem {
 		this.docPubYear = docPubYear;
 		this.docPubVenue = docPubVenue;
 	}
+        
+        public int getId() {
+            return id;
+        }   
 	
 	public float getSearchScore() {
 		return searchScore;
@@ -91,5 +97,5 @@ public class SearchResultItem {
 		}
 		
 		return retStr;
-	}
+	}    
 }

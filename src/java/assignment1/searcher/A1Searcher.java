@@ -135,10 +135,12 @@ public class A1Searcher {
 		List<String> keywords = Utils.getKeywords(inputs);
 		List<SearchResultItem> resultItems = new ArrayList();
 		
+                int id = 0;
 		for (ScoreDoc scoreDoc : hits.scoreDocs) {
 			Document doc = this.searcher.doc(scoreDoc.doc);
 			
 			resultItems.add(new SearchResultItem(
+                                        id,
 					keywords,
 					scoreDoc.score, 
 					doc.get("key"), 
@@ -146,7 +148,8 @@ public class A1Searcher {
 					Arrays.asList(doc.getValues("author")),
 					doc.get("pubyear"),
 					doc.get("pubvenue")
-			));
+			));                        
+                        id++;
 		}
 		
 		return new SearchResult(endTime - startTime, hits.totalHits, resultItems);

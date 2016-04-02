@@ -23,6 +23,8 @@
         
         //on search clicked
         $(document).on('click', '.btn-search', function(){
+            var btnSearch = $(this);
+            btnSearch.disable();
             
             //get queries
             var queries = new Array();
@@ -50,6 +52,9 @@
                 datatype: "application/json",
                 success: function (response) {
                     $('#divResult').html(response);
+                },
+                complete: function () {
+                    btnSearch.enable();
                 }
             });            
         });

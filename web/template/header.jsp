@@ -4,8 +4,8 @@
     Author     : Quoc
 --%>
 <script type="text/javascript">
-    $(document).ready(function(){    
-       showSearchPage(); 
+    $(document).ready(function(){   
+        showSearchPage();       
     });
     
     function showSearchPage(){
