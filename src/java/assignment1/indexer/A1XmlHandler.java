@@ -10,6 +10,7 @@ import common.Constants;
 import common.Utils;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.store.FSDirectory;
@@ -32,7 +33,7 @@ public class A1XmlHandler extends DefaultHandler {
 
 	private Boolean insideDblpItem = false; //inside inproceedings or article
     private A1DBLPItem item;
-	private String value;
+	private String value;        
     
 	@Override
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
@@ -52,7 +53,7 @@ public class A1XmlHandler extends DefaultHandler {
 			insideDblpItem = false;
 			if (item.getPubyear() == null || item.getPubvenue() == null || item.getTitle() == null) {
 				// Just ignore it
-				System.out.print("-");
+				//System.out.print("-");
 				return;
 			}
 
@@ -63,8 +64,10 @@ public class A1XmlHandler extends DefaultHandler {
 			else
 				throw new RuntimeException("Impossible state");
 
-			if ((noInproceedings + noArticles) % 10000 == 0) {
-				System.out.print(".");
+			if ((noInproceedings + noArticles) % 30000 == 0) {
+                            if ((noInproceedings + noArticles) % 300000 == 0) System.out.print("_");
+                            else System.out.print(".");
+                            if ((noInproceedings + noArticles) % 1200000 == 0) System.out.println("");
 			}
 
 			try {
@@ -72,7 +75,7 @@ public class A1XmlHandler extends DefaultHandler {
 						item.getTitle(), item.getAuthors());
 			} catch (IOException ex) {
 				throw new RuntimeException(ex.toString());
-			}
+			}                        
 		}
 		
 		else if (qName.equalsIgnoreCase("year")) {
@@ -102,7 +105,7 @@ public class A1XmlHandler extends DefaultHandler {
     
 	@Override
     public void startDocument(){
-        System.out.println("Start to parse and index dblp.xml");
+        System.out.println("Start to parse and index dblp.xml for Project 1");
 		this.startTS = System.currentTimeMillis();
 		
 		System.out.println("Start time: " + this.startTS);
@@ -129,7 +132,7 @@ public class A1XmlHandler extends DefaultHandler {
 			
 			IndexReader reader = DirectoryReader.open(FSDirectory.open(
 				Paths.get(Constants.INDEX_ASSIGNMENT1_DIR)));
-			System.out.println("Total terms in title: " + Utils.getSizeOfTerms(reader, "title"));
+			//System.out.println("Total terms in title: " + Utils.getSizeOfTerms(reader, "title"));
 			reader.close();
 			
 		} catch (IOException ex) {

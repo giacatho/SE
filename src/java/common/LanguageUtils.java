@@ -69,11 +69,12 @@ public class LanguageUtils {
                 while (iRelation >= 0 && (sent.posTag(iRelation).startsWith("NN") || sent.posTag(iRelation).startsWith("JJ"))) { //if still related with check word
                     
                     phrase = sent.word(iRelation) + " " + phrase;
-                    results.add(phrase);
+                    //results.add(phrase);
                     iRelation--;
                 }
                 
-                if (iRelation == iCheck-1) results.add(phrase);
+                //if (iRelation == iCheck-1) results.add(phrase);
+                results.add(phrase);
                 
                 iCheck = iRelation+1;
             }

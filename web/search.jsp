@@ -70,7 +70,7 @@
                     <div class="col col-sm-7">
                         <div class="row">
                             <div class="col-sm-12">
-                                <div class="search-zone"></div>
+                                <div class="search-zone">Loading library...</div>
                             </div>
                         </div>
                         <div class="row">

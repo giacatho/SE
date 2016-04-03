@@ -50,6 +50,12 @@ public class A2bXmlHandler extends DefaultHandler {
 			else
 				throw new RuntimeException("Impossible state");
 			
+                        if ((noInproceedings + noArticles) % 30000 == 0) {
+                            if ((noInproceedings + noArticles) % 300000 == 0) System.out.print("_");
+                            else System.out.print(".");
+                            if ((noInproceedings + noArticles) % 1200000 == 0) System.out.println("");
+			}
+                        
 			if (item.getPubyear() == null || item.getPubvenue() == null)
 				// Just ignore this paper
 				return;
